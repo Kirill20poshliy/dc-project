@@ -1,0 +1,26 @@
+.memory {
+    gap: .75rem;
+}
+
+.memory-bar {
+    width: 100%;
+    height: .75rem;
+    border-radius: 1000rem;
+    background-color: #D7E9FF;
+    overflow: hidden;
+}
+
+.memory-bar-progress {
+    height: inherit;
+    background-color: #1667DE;
+    border-radius: 1000rem;
+}
+
+.memory-plate {
+    background-color: #D7E9FF;
+    border-radius: .75rem;
+    height: 2rem;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #1667DE;
+}

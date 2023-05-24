@@ -1,0 +1,33 @@
+.menu-main {
+    background-color: #fff;
+    padding: 1.25rem 1.5rem;
+    height: 100vh;
+    gap: 2.75rem;
+    width: 16.5rem;
+}
+
+.menu-head {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+}
+
+.operating-panel {
+    gap: 2rem;
+}
+
+.switch {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.switch > p {
+    font-size: .75rem;
+    color: #6CACED;
+    font-weight: 600;
+}
+
+.menu-folders {
+    gap: .75rem;
+}
