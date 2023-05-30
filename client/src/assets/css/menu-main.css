@@ -1,9 +1,14 @@
 .menu-main {
     background-color: #fff;
     padding: 1.25rem 1.5rem;
-    height: 100vh;
     gap: 2.75rem;
-    width: 16.5rem;
+    grid-column: 2/2;
+    grid-row: 1/5;
+    overflow-y: scroll;
+}
+
+.menu-main::-webkit-scrollbar {
+    display: none;
 }
 
 .menu-head {

@@ -1,0 +1,8 @@
+.header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: .175rem solid #E6E7EB;
+    color: #1667DE;
+    font-weight: 600;
+    grid-column: 3/5;
+    grid-row: 1/1;
+}
