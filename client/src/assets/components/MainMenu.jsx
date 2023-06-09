@@ -71,7 +71,7 @@ class MainMenu extends Component {
                                 </div>
                             </button>
                         </div>
-                        <p>Опции</p>
+                        <p>Фильтры</p>
                         <div className="row btn-layout space-between">
                             <button className="btn content-center btn-option">
                                 <img src={importantIcon} alt=""/>

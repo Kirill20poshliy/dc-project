@@ -22,7 +22,8 @@ class Header extends Component {
         return(
             <div className="header row space-between">
                 <input 
-                    type="search" 
+                    type="search"
+                    id="search"
                     placeholder="Поиск"
                     value={this.state.search}
                     onChange={(e) => this.setState({search: e.target.value})}

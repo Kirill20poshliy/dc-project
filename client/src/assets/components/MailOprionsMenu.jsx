@@ -20,12 +20,14 @@ class MailOptionsMenu extends Component {
 
         return (
             <div className="row mail-options">
+                <label className="checkbox">
                     <input 
                         type="checkbox"
                         name="check"
                         onChange={() => this.checkHandler()}
                     />
-                    {/* <label htmlFor="check"/>                     */}
+                    <div className="checkmark"></div>
+                </label>
                 <button 
                     className="btn btn-layout btn-context" 
                     disabled={active ? "" : "disabled"}

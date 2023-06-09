@@ -6,6 +6,7 @@ import SettingsMenu from './assets/components/SettingsMenu';
 import Header from './assets/components/Header';
 import MailOptionsMenu from './assets/components/MailOprionsMenu';
 import MailList from './assets/components/MailList';
+import MailCard from './assets/components/MailCard';
 
 class App extends Component {
 
@@ -14,28 +15,45 @@ class App extends Component {
     settings: false,
     checkAllItems: false,
     checkedItem: '',
+    mailOptionsActive: false,
   }
 
   setSettings = (e) => {
     this.setState({settings: e})
   }
 
-  checkItemsHandler = (state) => {
+  checkAllItemsHandler = (state) => {
       this.setState({checkAllItems: state ? false : true})
   }
 
+  checkHandler = () => {
+    this.setState({mailOptionsActive: this.state.mailOptionsActive ? false : true})
+}
+
   render () {
 
-    const {incoming, settings, checkedItem, checkAllItems} = this.state
+    const {incoming, settings, checkAllItems, mailOptionsActive} = this.state
 
     return (
       <div className="App">
-        <MenuLeft settings={settings} setSettings={this.setSettings}/>
-        <MainMenu incoming={incoming}/>
+        <MenuLeft 
+          settings={settings} 
+          setSettings={this.setSettings}
+        />
+        <MainMenu 
+          incoming={incoming}
+        />
         {settings ? (<SettingsMenu active={settings} setSettings={this.setSettings}/>) : ('')}
         <Header/>
-        <MailOptionsMenu check={this.checkItemsHandler}/>
-        <MailList check={checkedItem} checkAll={checkAllItems}/>
+        <MailOptionsMenu 
+          check={this.checkAllItemsHandler} 
+          activeMenu={mailOptionsActive}
+        />
+        <MailList 
+          check={this.checkHandler} 
+          checkAll={checkAllItems}
+        />
+        <MailCard/>
       </div>
     );    
   }

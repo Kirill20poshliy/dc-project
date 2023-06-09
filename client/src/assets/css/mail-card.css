@@ -1,0 +1,7 @@
+.mail-card {
+    grid-column: 4/4;
+    grid-row: 3/5;
+    padding: 1.25rem;
+    overflow-y: scroll;
+    text-align: center;
+}

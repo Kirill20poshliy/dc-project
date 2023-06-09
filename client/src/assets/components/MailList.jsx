@@ -43,7 +43,12 @@ class MailList extends Component {
         return (
             <div className="column mail-list">
                 {mails.map(mail => (
-                    <MailItem key={mail.time} {...mail} checkAll={this.props.checkAll}/>
+                    <MailItem 
+                        key={mail.time} 
+                        {...mail} 
+                        checkAll={this.props.checkAll} 
+                        checked={this.props.check}
+                    />
                 ))}
             </div>
         )

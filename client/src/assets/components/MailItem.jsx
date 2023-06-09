@@ -5,45 +5,51 @@ class MailItem extends Component {
 
     state = {
         important: '',
-        clicked: false,
         attachments: '',
+        isChecked: false,
     }
 
-    clickHandler = () => {
-        return (this.state.clicked ? false : true)
+    checkHandler = () => {
+        this.setState({isChecked: this.state.isChecked ? false : true})
+        this.props.checked()
     }
 
     render () {
 
-        const {mailer, mailerAvatar, title, time} = this.props
-        const {clicked} = this.state
+        const {mailer, mailerAvatar, title, time, id, checkAll} = this.props
+        const {isChecked} = this.state
 
         return (
-            <div 
-                className={`mail-item column ${clicked ? 'mail-item-checked' : ''}`} 
-                onClick={() => this.setState({clicked: this.clickHandler()})}
-            >
-                <div className="row btn-layout">
-                    <div className="user-avatar row content-center">
-                        {mailerAvatar ? <img src={mailerAvatar} alt=""/> : "?"}
+
+            <label className="mail-item">
+                <input type="radio" name="item" id={`item-${id}`} />
+                <div className="radiomark">
+                    <div className="row btn-layout">
+                        <div className="user-avatar row content-center">
+                            {mailerAvatar ? <img src={mailerAvatar} alt=""/> : "?"}
+                        </div>
+                        <div className="op-5">{mailer}</div>
                     </div>
-                    <div className="op-5">{mailer}</div>
-                </div>
-                <div className="title">{title}</div>
-                <div className="row space-between">
-                    <div className="row options">
-                        <input 
-                            type="checkbox" 
-                            name="check"                    
-                        />
-                        {/* <label htmlFor="check"/> */}
-                        <button className="btn btn-context">
-                            <img src={importantIcon} alt=""/> 
-                        </button>                       
+                    <div className="title">{title}</div>
+                    <div className="row space-between">
+                        <div className="row options">
+                            <label className="checkbox">
+                                <input 
+                                    type="checkbox" 
+                                    name="check"
+                                    checked={checkAll ? checkAll : isChecked} 
+                                    onChange={this.checkHandler}                  
+                                />
+                                <div className="checkmark"></div>
+                            </label>
+                            <button className="btn btn-context">
+                                <img src={importantIcon} alt=""/> 
+                            </button>                       
+                        </div>
+                        <div className="op-5">{time}</div>
                     </div>
-                    <div className="op-5">{time}</div>
                 </div>
-            </div>
+            </label>
         )
 
     }
