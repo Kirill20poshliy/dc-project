@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import resendIcon from '../icons/resend-icon.svg'
+import shareIcon from '../icons/share-icon.svg'
 import trashIcon from '../icons/trash-icon.svg'
 import writtenIcon from '../icons/written-icon.svg'
 
@@ -12,6 +12,11 @@ class MailOptionsMenu extends Component {
     checkHandler = () => {
         this.setState({active: this.state.active ? false : true})
         this.props.check(this.state.active)
+    }
+
+    deleteHandler = () => {
+        // console.log(this.props)
+        this.props.delete()
     }
 
     render () {
@@ -30,23 +35,24 @@ class MailOptionsMenu extends Component {
                 </label>
                 <button 
                     className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
+                    disabled={(active || this.props.activeMenu) && this.props.pageMode !== 'deleted' ? "" : "disabled"}
                 >
-                    <img src={resendIcon} alt=""/>
+                    <img className='icon' src={shareIcon} alt=""/>
                     Переслать
                 </button>
                 <button 
                     className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
+                    disabled={active || this.props.activeMenu ? "" : "disabled"}
+                    onClick={() => this.deleteHandler()}
                 >
-                    <img src={trashIcon} alt=""/>
+                    <img className='icon' src={trashIcon} alt=""/>
                     Удалить
                 </button>
                 <button 
                     className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
+                    disabled={(active || this.props.activeMenu) && this.props.pageMode !== 'deleted' ? "" : "disabled"}
                 >
-                    <img src={writtenIcon} alt=""/>
+                    <img className='icon' src={writtenIcon} alt=""/>
                     Прочитать
                 </button>
             </div>

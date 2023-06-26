@@ -3,8 +3,17 @@ import React, {Component} from "react";
 class MemoryBar extends Component {
 
     state = {
-        totalMemory: 0,
+        totalMemory: 200,
         memory: 0,
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:3000/user')
+        .then(response => response.json())
+        .then(data => {
+            this.setState({memory: data.occupiedMemory})
+        })
+        .catch(err => console.log(err))
     }
 
     render () {

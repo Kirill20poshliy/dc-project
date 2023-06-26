@@ -4,9 +4,18 @@ import userIcon from "../img/avatar.jpg"
 class Header extends Component {
 
     state = {
-        userName: 'Яковлев С.А.',
         userAvatar: userIcon,
+        userName: '',
         search: '',
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:3000/user')
+        .then(response => response.json())
+        .then(data => {
+            this.setState({userName: data.name})
+        })
+        .catch(err => console.log(err))
     }
 
     // handleKey = (event) => {
@@ -20,7 +29,7 @@ class Header extends Component {
         const {userName, userAvatar} = this.state
 
         return(
-            <div className="header row space-between">
+            <header className="header row space-between">
                 <input 
                     type="search"
                     id="search"
@@ -32,10 +41,10 @@ class Header extends Component {
                 <div className="row btn-layout">
                     {userName ? userName : 'User'}
                     <div className="user-avatar row content-center">
-                        {userAvatar ? <img src={userAvatar} alt="Аватар"/> : "?"}
+                        {userAvatar ? <img src={userAvatar} alt="Аватар"/> : userName[0]}
                     </div>
                 </div>
-            </div>
+            </header>
         )
 
     }

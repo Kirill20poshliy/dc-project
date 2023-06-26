@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import settingsIcon from '../icons/settings.svg'
-import neirospIcon from '../icons/neirospoc-icon.svg'
+import settingsIcon from '../../icons/settings.svg'
+import neirospIcon from '../../icons/neirospoc-icon.svg'
 
 class MenuLeft extends Component {
 
@@ -13,19 +13,19 @@ class MenuLeft extends Component {
             <div className="menu-left">
                 <button 
                     className="btn btn-link content-center" 
-                    title="settings"
+                    title="Настройки"
                     onClick={() => this.props.setSettings(this.switchHandler())}
                 >
-                    <img src={settingsIcon} alt="settings"/>
+                    <img className='' src={settingsIcon} alt="settings"/>
                 </button>
                 <div className="link-menu-layout">
                     <a 
                         className="btn btn-link content-center" 
                         href="https://bmstu.online/" target="_blank" 
                         rel="noreferrer" 
-                        title="NeiroSpoc"
+                        title="Нейро-Spoc"
                     >
-                        <img src={neirospIcon} alt="neiro-spoc"/>
+                        <img className='icon' src={neirospIcon} alt="neiro-spoc"/>
                     </a>                
                 </div>
             </div>

@@ -1,0 +1,28 @@
+.column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .content-center {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content-start {
+    justify-content: start;
+    align-items: start;
+  }
+  
+  .space-between {
+    justify-content: space-between
+  }
+
+  .text-body-start {
+    text-align: start;
+    line-height: 1.75rem;
+  }

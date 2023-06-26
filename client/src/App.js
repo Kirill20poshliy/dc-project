@@ -1,59 +1,73 @@
 import React, {Component} from 'react';
-import MenuLeft from './assets/components/MenuLeft';
-import MainMenu from './assets/components/MainMenu';
-import './assets/css/App.css';
-import SettingsMenu from './assets/components/SettingsMenu';
-import Header from './assets/components/Header';
-import MailOptionsMenu from './assets/components/MailOprionsMenu';
-import MailList from './assets/components/MailList';
-import MailCard from './assets/components/MailCard';
+import './assets/css/global/App.css';
+import MenuForPC from './assets/components/global/MenuForPC';
+import MainField from './assets/components/global/MainField';
+
 
 class App extends Component {
 
   state = {
     incoming: 0,
-    settings: false,
-    checkAllItems: false,
-    checkedItem: '',
-    mailOptionsActive: false,
+    pageMode: '',
+    mailList: [],
   }
 
-  setSettings = (e) => {
-    this.setState({settings: e})
+  incomingHandler = () => {
+    fetch('http://localhost:3000/mails')
+    .then(response => response.json())
+    .then(data => {
+        let incoming = 0
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i].read) {
+                incoming += 1
+            }
+        }
+        this.setState({incoming: incoming})
+    })
+    .catch(err => console.log(err))
   }
 
-  checkAllItemsHandler = (state) => {
-      this.setState({checkAllItems: state ? false : true})
+  listFetch = (listFilter) => {
+    fetch(`http://localhost:3000/mails${listFilter}`)
+    .then(response => response.json())
+    .then(mails => {
+      if (listFilter === '') {
+        for (let i = 0; i < mails.length; i++) {
+          if (!mails[i].attachments.length) {
+            mails = mails.filter((mail) => (mail.attachments.length !== 0 && mail.deleted === false))
+          }
+        }
+      }
+      if (listFilter === '?deleted=true') {
+        this.setState({pageMode: 'deleted'})
+      } else {
+        this.setState({pageMode: ''})
+      }
+      this.setState({mailList: mails})
+    })
+    .catch((err) => console.log(err))
   }
 
-  checkHandler = () => {
-    this.setState({mailOptionsActive: this.state.mailOptionsActive ? false : true})
-}
+  mailWriteHandler = () => {
+    this.setState({pageMode: 'writeMail'}) 
+  }
 
   render () {
 
-    const {incoming, settings, checkAllItems, mailOptionsActive} = this.state
-
     return (
       <div className="App">
-        <MenuLeft 
-          settings={settings} 
-          setSettings={this.setSettings}
+        <MenuForPC 
+          incoming={this.state.incoming} 
+          attachmentsMode={this.listAttachmentsFetch}
+          listFetch={this.listFetch}
+          writeMail={this.mailWriteHandler}
         />
-        <MainMenu 
-          incoming={incoming}
+        <MainField 
+          incoming={this.incomingHandler} 
+          mails={this.state.mailList} 
+          listFetch={this.listFetch}
+          pageMode={this.state.pageMode}
         />
-        {settings ? (<SettingsMenu active={settings} setSettings={this.setSettings}/>) : ('')}
-        <Header/>
-        <MailOptionsMenu 
-          check={this.checkAllItemsHandler} 
-          activeMenu={mailOptionsActive}
-        />
-        <MailList 
-          check={this.checkHandler} 
-          checkAll={checkAllItems}
-        />
-        <MailCard/>
       </div>
     );    
   }
