@@ -1,60 +1,36 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import Header from '../Header'
 import MailInteractionField from './MailInteractionField'
 import MailWriteField from '../MailWriteField'
 import {Route, Routes} from 'react-router-dom'
 
-class MainField extends Component {
+const MainField = (props) => {
 
-    state = {
-        pageMode: '',
-    }
+    const [pageMode, setPageMode] = useState('')
 
-    componentDidMount() {
-        this.setState({pageMode: this.props.pageMode})
-    }
+    useEffect(() => {
+        setPageMode(props.pageMode)   
+    }, [props.pageMode])
 
-    componentDidUpdate(prevProps) {
-        if (this.props.pageMode !== prevProps.pageMode) {
-            this.setState({pageMode: this.props.pageMode})
-            console.log('state was updated!')
-        }
-    }
-
-    render() {
-
-        return(
-                <div className='main-field'>
-                    <Header/>
-                    <Routes>
-                        <Route path='/*' element={
-                            <MailInteractionField
-                                incoming={this.props.incoming} 
-                                mails={this.props.mails}
-                                listMode={this.props.listMode}
-                                pageMode={this.state.pageMode}
-                                listFetch={this.props.listFetch}                               
-                            />
-                        }/>
-                        <Route path='/write' element={
-                            <MailWriteField/>
-                        }/>
-                    </Routes>
-                    {/* {this.props.pageMode === ''||'deleted' ? 
-                        (<MailInteractionField 
-                            incoming={this.props.incoming} 
-                            mails={this.props.mails}
-                            listMode={this.props.listMode}
-                            pageMode={this.state.pageMode}
-                            listFetch={this.props.listFetch}
-                        />)
-                        :
-                        (<MailWriteField/>)
-                    } */}
-                </div>
-        )
-    }
-
+    return(
+        <div className='main-field'>
+            <Header/>
+            <Routes>
+                <Route path='/*' element={
+                    <MailInteractionField
+                        incoming={props.incoming} 
+                        mails={props.mails}
+                        listMode={props.listMode}
+                        pageMode={pageMode}
+                        listFetch={props.listFetch}                               
+                    />
+                }/>
+                <Route path='/write' element={
+                    <MailWriteField/>
+                }/>
+            </Routes>
+        </div>
+    )
 }
 
 export default MainField

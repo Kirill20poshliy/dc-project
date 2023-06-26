@@ -1,31 +1,29 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import importantIcon from "../icons/important-icon.svg"
 import importantCheckedIcon from "../icons/important-checked-icon.svg"
 import attachmentsIcon from '../icons/attachments-icon.svg'
 
-class MailItem extends Component {
+const MailItem = (props) => {
 
-    state = {
-        isChecked: false,
-        mailRead: this.props.read,
-        important: this.props.important,
+    const [isChecked, setCheck] = useState(false)
+    const [isRead, setRead] = useState(props.read)
+    const [isImportant, setImportant] = useState(props.important)
+
+    const checkHandler = (checkedItem) => {
+        setCheck(isChecked ? false : true)
+        props.checked(checkedItem)
     }
 
-    checkHandler = (checkedItem) => {
-        this.setState({isChecked: this.state.isChecked ? false : true})
-        this.props.checked(checkedItem)
-    }
-
-    readHandler = () => {
-        if (!this.props.read) {
-            this.setState({mailRead: true})
+    const readHandler = () => {
+        if (!props.read) {
+            setRead(true)
         }
-        this.props.mapping(this.props.id)
+        props.mapping(props.id)
     }
 
-    importantHandler = () => {
-        let val = this.state.important ? false : true
-        fetch(`http://localhost:3000/mails/${this.props.id}`, {
+    const importantHandler = () => {
+        let val = isImportant ? false : true
+        fetch(`http://localhost:3000/mails/${props.id}`, {
             method: 'PATCH',
             body: JSON.stringify({important: val}),
             headers: {
@@ -33,61 +31,56 @@ class MailItem extends Component {
                 },
         })
         .then(() => {
-            this.setState({important: val})
+            setImportant(val)
         })
         .catch(err => console.log(err))
     }
 
-    render () {
+    const {title, time, id, checkAll, attachments} = props
+    const {avatar, name} = props.mailer
 
-        const {title, time, id, checkAll, attachments} = this.props
-        const {avatar, name} = this.props.mailer
-        const {isChecked} = this.state
+    return (
 
-        return (
-
-            <label className="mail-item">
-                <input 
-                    type="radio" 
-                    name="item" 
-                    id={`item-${id}`}
-                    onChange={this.readHandler}
-                />
-                <div className="radiomark">
-                    <div className="row btn-layout">
-                        <div className="user-avatar row content-center">
-                            {avatar ? <img src={avatar} alt=""/> : name[0]}
-                        </div>
-                        <div className={this.state.mailRead ? 'op-5' : 'op-1 color-primary'}>{name}</div>
+        <label className="mail-item">
+            <input 
+                type="radio" 
+                name="item" 
+                id={`item-${id}`}
+                onChange={readHandler}
+            />
+            <div className="radiomark">
+                <div className="row btn-layout">
+                    <div className="user-avatar row content-center">
+                        {avatar ? <img src={avatar} alt=""/> : name[0]}
                     </div>
-                    <div className="title">{title}</div>
-                    <div className="row space-between">
-                        <div className="row options">
-                            <label className="checkbox">
-                                <input 
-                                    type="checkbox" 
-                                    name="check"
-                                    checked={checkAll ? checkAll : isChecked} 
-                                    onChange={() => this.checkHandler(id)}                  
-                                />
-                                <div className="checkmark"></div>
-                            </label>
-                            <button className="btn btn-context" onClick={this.importantHandler}>
-                                <img className='icon' src={this.state.important ? importantCheckedIcon : importantIcon} alt=""/> 
-                            </button>
-                            {attachments.length ?
-                                <img className='icon' src={attachmentsIcon} alt=''/>
-                            : 
-                                ''
-                            }                       
-                        </div>
-                        <div className="op-5">{time}</div>
-                    </div>
+                    <div className={isRead ? 'op-5' : 'op-1 color-primary'}>{name}</div>
                 </div>
-            </label>
-        )
-
-    }
+                <div className="title">{title}</div>
+                <div className="row space-between">
+                    <div className="row options">
+                        <label className="checkbox">
+                            <input 
+                                type="checkbox" 
+                                name="check"
+                                checked={checkAll ? checkAll : isChecked} 
+                                onChange={() => checkHandler(id)}                  
+                            />
+                            <div className="checkmark"></div>
+                        </label>
+                        <button className="btn btn-context" onClick={importantHandler}>
+                            <img className='icon' src={isImportant ? importantCheckedIcon : importantIcon} alt=""/> 
+                        </button>
+                        {attachments.length ?
+                            <img className='icon' src={attachmentsIcon} alt=''/>
+                        : 
+                            ''
+                        }                       
+                    </div>
+                    <div className="op-5">{time}</div>
+                </div>
+            </div>
+        </label>
+    )
 
 }
 

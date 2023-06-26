@@ -1,54 +1,50 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import MailOptionsMenu from '../MailOprionsMenu'
 import MailList from '../MailList'
 import MailCard from '../MailCard'
 
-class MailInteractionField extends Component {
+const MailInteractionField = (props) => {
 
-    state = {
-        checkAllItems: false,
-        checkedItems: [],
-        mailOptionsActive: false,
-        mailCardActive: false,
-        mails: [],
-        mappedLetter: '',
-        loading: true,
-    }
+    const [checkAllItems, setCheckAllItems] = useState(false)
+    const [checkedItems, setCheckedItems] = useState([])
+    const [mailOptionsActive, setMailOptionsActive] = useState(false)
+    const [mailCardActive, setMailCardActive] = useState(false)
+    const [mails, setMails] = useState([])
+    const [mappedLetter, setMappedLetter] = useState('')
+    const [loading, setLoading] = useState(true)
 
-    componentDidUpdate(prevProps) {
-        if (this.props.mails !== prevProps.mails) {
-            this.setState({mails: this.props.mails})
-            this.setState({loading: false})
-            this.props.incoming()
-        }
-    }
+    useEffect(() => {
+        setMails(props.mails)
+        setLoading(false)
+        props.incoming()        
+    }, [props.mails])
 
-    checkAllItemsHandler = (state) => {
+    const checkAllItemsHandler = (state) => {
         let idxs = []
-        if (!this.state.checkAllItems) {
-            for (let i = 0; i < this.state.mails.length; i++) {
-                idxs.push(this.state.mails[i].id)
+        if (!checkAllItems) {
+            for (let i = 0; i < mails.length; i++) {
+                idxs.push(mails[i].id)
             }
         }
-        this.setState({checkedItems: idxs})
-        this.setState({checkAllItems: state ? false : true})
+        setCheckedItems(idxs)
+        setCheckAllItems(state ? false : true)
     }
 
-    checkHandler = (checkedItem) => {
-        let items = this.state.checkedItems
+    const checkHandler = (checkedItem) => {
+        let items = checkedItems
         if (items.includes(checkedItem)) {
             items = items.filter((item) => item !== checkedItem)
         } else {
             items.push(checkedItem)
         }
-        this.setState({checkedItems: items})
-        this.setState({mailOptionsActive: 
-            !items.length && this.state.mailOptionsActive ? 
-            false : true})
+        setCheckedItems(items)
+        setMailOptionsActive( 
+            !items.length && mailOptionsActive ? 
+            false : true)
     }
 
-    letterMappingHandler = (idx) => {
-        if (this.state.mails.find(letter => letter.id === (idx)).read === false) {
+    const letterMappingHandler = (idx) => {
+        if (mails.find(letter => letter.id === (idx)).read === false) {
             fetch(`http://localhost:3000/mails/${idx}`, {
                 method: 'PATCH',
                 body: JSON.stringify({read: true}),
@@ -58,18 +54,18 @@ class MailInteractionField extends Component {
             })
             .then(response => {
                 response.json()
-                this.props.incoming()
+                props.incoming()
             })
             .catch((err) => console.log(err))
 
         }
-        this.setState({mailCardActive: true})
-        this.setState({mappedLetter: this.state.mails.find(letter => letter.id === (idx))})
+        setMailCardActive(true)
+        setMappedLetter(mails.find(letter => letter.id === (idx)))
     }
 
-    deleteHandler = () => {
+    const deleteHandler = () => {
         for (let i = 0; i < this.state.checkedItems.length; i++) {
-            fetch(`http://localhost:3000/mails/${this.state.checkedItems[i]}`, {
+            fetch(`http://localhost:3000/mails/${checkedItems[i]}`, {
                 method: 'PATCH',
                 body: JSON.stringify({deleted: true}),
                 headers: {
@@ -77,48 +73,45 @@ class MailInteractionField extends Component {
                     },
             })
             .then(() => {
-                this.props.listFetch('?deleted=false')}
+                props.listFetch('?deleted=false')}
             )
             .catch(err => console.log(err))
         }
     }
 
-    resendHandler = () => {
+    const resendHandler = () => {
 
     }
 
-    readHandler = () => {
+    const readHandler = () => {
 
     }
 
-    render() {
+    return (
 
-        const {checkAllItems, mailOptionsActive, mailCardActive, mails, mappedLetter, loading} = this.state
-
-        return(
-            <div className='mail-interaction-field'>
-                <MailOptionsMenu
-                    check={this.checkAllItemsHandler} 
-                    activeMenu={mailOptionsActive}
-                    pageMode={this.props.pageMode}
-                    delete={this.deleteHandler}
-                    resend={this.resendHandler}
-                    read={this.readHandler}
+        <div className='mail-interaction-field'>
+            <MailOptionsMenu
+                check={checkAllItemsHandler} 
+                activeMenu={mailOptionsActive}
+                pageMode={props.pageMode}
+                delete={deleteHandler}
+                resend={resendHandler}
+                read={readHandler}
+            />
+            {loading ? 
+                <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                :
+                <MailList 
+                    check={checkHandler} 
+                    checkAll={checkAllItems}
+                    mails={mails}
+                    mapping={letterMappingHandler}
                 />
-                {loading ? 
-                    <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                    :
-                    <MailList 
-                        check={this.checkHandler} 
-                        checkAll={checkAllItems}
-                        mails={mails}
-                        mapping={this.letterMappingHandler}
-                    />
-                }
-                <MailCard activeCard={mailCardActive} letter={mappedLetter}/>
-            </div>
-        )
-    }
+            }
+            <MailCard activeCard={mailCardActive} letter={mappedLetter}/>
+        </div>
+        
+    )
 
 }
 

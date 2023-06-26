@@ -1,28 +1,24 @@
-import React, {Component} from "react";
+import React from "react";
 import MailItem from './MailItem'
 
-class MailList extends Component {
+const MailList = (props) => {
 
-    render () {
+    const {mails, checkAll, check, mapping} = props
 
-        const {mails, checkAll, check, mapping} = this.props
+    return (
+        <div className="column mail-list">
+            {mails.map(mail => (
+                <MailItem 
+                    key={mail.time} 
+                    {...mail}
+                    checkAll={checkAll} 
+                    checked={check}
+                    mapping={mapping}
+                />
+            ))}
+        </div>
+    )
 
-        return (
-            <div className="column mail-list">
-                {mails.map(mail => (
-                    <MailItem 
-                        key={mail.time} 
-                        {...mail}
-                        checkAll={checkAll} 
-                        checked={check}
-                        mapping={mapping}
-                    />
-                ))}
-            </div>
-        )
-
-    }
-    
 }
 
 export default MailList

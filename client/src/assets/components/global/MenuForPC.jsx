@@ -1,40 +1,32 @@
-import React, {Component} from 'react'
+import React, {useState} from 'react'
 import MenuLeft from '../menuPC/MenuLeft'
 import MainMenu from '../menuPC/MainMenu'
 import SettingsMenu from '../menuPC/SettingsMenu'
 
-class MenuForPC extends Component {
+const MenuForPC = (props) => {
 
-    state = {
-        settings: false,
+    const [settings, setSettings] = useState(false)
+
+    const useSetSettings = (e) => {
+        setSettings(e)
     }
 
-    setSettings = (e) => {
-        this.setState({settings: e})
-    }
+    return (
 
-    render() {
+        <div className='menu-pc'>
+            <MenuLeft 
+                settings={settings} 
+                setSettings={useSetSettings}
+            />
+            <MainMenu 
+                incoming={props.incoming}
+                mode={props.listFetch}
+                writeMail={props.writeMail}
+            />
+            {settings ? (<SettingsMenu active={settings} setSettings={useSetSettings}/>) : ('')}
+        </div>
 
-        const {settings} = this.state
-
-        return(
-
-            <div className='menu-pc'>
-                <MenuLeft 
-                    settings={settings} 
-                    setSettings={this.setSettings}
-                />
-                <MainMenu 
-                    incoming={this.props.incoming}
-                    mode={this.props.listFetch}
-                    writeMail={this.props.writeMail}
-                />
-                {settings ? (<SettingsMenu active={settings} setSettings={this.setSettings}/>) : ('')}
-            </div>
-
-        )
-    }
-
+    )
 }
 
 export default MenuForPC
