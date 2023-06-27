@@ -1,0 +1,17 @@
+.menu-left {
+    grid-column: 1/1;
+    grid-row: 1/5;
+    background: linear-gradient(180deg, #1667DE 0%, rgba(22, 103, 222, 0.53) 100%);
+    height: 100vh;
+    padding: 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.link-menu-layout {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
