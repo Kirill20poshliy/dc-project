@@ -1,52 +1,91 @@
+"""
+Модели для внутренней почты.
+
+Файл содержит определение трех моделей: UserProfile, Message и Attachment,
+которые используются для создания внутренней почты и связанных с ней объектов.
+
+
+Модель для профиля пользователя.
+
+    Поля:
+    - user: связь с моделью User из Django
+    - first_name: имя пользователя
+    - last_name: фамилия пользователя
+    - middle_name: отчество пользователя
+    - login: логин пользователя
+    - password: пароль пользователя
+    - type: тип пользователя (Студент/Сотрудник)
+
+Модель для сообщений.
+
+    Поля:
+    - message_id: уникальный идентификатор сообщения
+    - sender: связь с моделью UserProfile для отправителя
+    - recipient: связь с моделью UserProfile для получателя
+    - date_received: дата получения сообщения
+    - subject: тема сообщения
+    - body: текст сообщения
+    - date_sent: дата и время отправки сообщения
+    - date_read: дата и время прочтения сообщения (может быть NULL, если сообщение не прочитано)
+    - status: статус сообщения (прочитано/не прочитано)
+    - important: флаг важности сообщения
+
+ Модель для вложений сообщений.
+
+    Поля:
+    - message: связь с моделью Message для вложения
+    - file: файл вложения
+    - file_name: имя файла вложения
+    - file_type: тип файла
+"""
+
+
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    user_id = models.AutoField(primary_key=True)  # Уникальный идентификатор пользователя
-    first_name = models.CharField(max_length=255)  # Имя пользователя
-    last_name = models.CharField(max_length=255)  # Фамилия пользователя
-    middle_name = models.CharField(max_length=255)  # Отчество пользователя
-    email = models.CharField(max_length=255)  # Почта пользователя
-    password = models.CharField(max_length=255)  # Пароль пользователя
-    USER_TYPES = [
-        ('студент', 'Студент'),
-        ('сотрудник', 'Сотрудник'),
-    ]
-    user_type = models.CharField(max_length=255, choices=USER_TYPES)  # Тип пользователя: 'студент' или 'сотрудник'
-
-    def __str__(self):
-        return f"{self.last_name} {self.first_name}"
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Связь с моделью User из Django
+    first_name = models.CharField(max_length=50)  # Поле для имени пользователя
+    last_name = models.CharField(max_length=50)  # Поле для фамилии пользователя
+    middle_name = models.CharField(max_length=50)  # Поле для отчества пользователя
+    login = models.CharField(max_length=50)  # Поле для логина пользователя
+    password = models.CharField(max_length=50)  # Поле для пароля пользователя
+    TYPE_CHOICES = (
+        ('student', 'Студент'),
+        ('employee', 'Сотрудник'),
+    )
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)  # Поле для типа пользователя
 
 class Message(models.Model):
-    message_id = models.AutoField(primary_key=True)  # Уникальный идентификатор сообщения
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')  # Идентификатор отправителя сообщения (ссылка на поле user_id в таблице Users)
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')  # Идентификатор получателя сообщения (ссылка на поле user_id в таблице Users)
-    subject = models.CharField(max_length=255)  # Тема сообщения
-    body = models.TextField()  # Текст сообщения
-    date_sent = models.DateTimeField()  # Дата и время отправки сообщения
-    date_read = models.DateTimeField(null=True)  # Дата и время прочтения сообщения (может быть NULL, если сообщение не прочитано)
+    message_id = models.AutoField(primary_key=True)
+    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, related_name='received_messages')
+    date_received = models.DateTimeField(auto_now_add=True)
+    subject = models.CharField(max_length=50)
+    body = models.TextField()
+    date_sent = models.DateTimeField()
+    date_read = models.DateTimeField(null=True)
     MESSAGE_STATUSES = [
         ('прочитано', 'Прочитано'),
         ('не прочитано', 'Не прочитано'),
     ]
-    status = models.CharField(max_length=255, choices=MESSAGE_STATUSES)  # Статус сообщения: 'прочитано' или 'не прочитано'
-    important = models.BooleanField()  # Флаг важности сообщения: True - важное, False - не важное
+    status = models.CharField(max_length=20, choices=MESSAGE_STATUSES)
+    important = models.BooleanField()
+    deleted = models.BooleanField(default=False)  # Поле для статуса удаления сообщения
 
     def __str__(self):
         return self.subject
 
-class MessageAttachment(models.Model):
-    attachment_id = models.AutoField(primary_key=True)  # Уникальный идентификатор вложения
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)  # Идентификатор сообщения, к которому прикреплено вложение (ссылка на поле message_id в таблице Messages)
-    file_name = models.CharField(max_length=255)  # Имя файла вложения
-    file_type = models.CharField(max_length=255)  # Тип файла (например, 'фото', 'видео', 'документ' и т.д.)
-    file_path = models.FilePathField(blank=False)  # Путь к файлу вложения на сервере (может быть строкой или BLOB для хранения файлов напрямую в базе данных)
+
+def get_attachment_upload_path(instance, filename):
+    # Формируем путь для сохранения вложения с использованием уникального идентификатора в базовой директории
+    return f'attachments/{instance.message_id}/{filename}'
+
+class Attachment(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
+    file = models.FileField(upload_to=get_attachment_upload_path)
+    file_name = models.CharField(max_length=50)  # Имя файла вложения
+    file_type = models.CharField(max_length=20)  # Тип файла
 
     def __str__(self):
         return self.file_name
-
-class DeletedMessage(models.Model):
-    message = models.OneToOneField(Message, primary_key=True, on_delete=models.CASCADE)  # Идентификатор удаленного сообщения (ссылка на поле message_id в таблице Messages)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Идентификатор пользователя, который удалил сообщение (ссылка на поле user_id в таблице Users)
-
-    def __str__(self):
-        return f"Deleted: {self.message.subject}"
