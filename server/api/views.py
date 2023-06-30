@@ -1,16 +1,55 @@
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
+"""
+ViewSet представления моделей для API веб приложения.
+
+Файл содержит представления трех моделей: UserProfile, Message и Attachment,
+которые используются для создания внутренней почты и связанных с ней объектов.
+"""
 
 
-class ExampleView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import OrderingFilter 
+from django_filters.rest_framework import DjangoFilterBackend
 
-    def get(self, request, format=None):
-        content = {
-            'user': str(request.user),  # `django.contrib.auth.User` instance.
-            'auth': str(request.auth),  # None
-        }
-        return Response(content)
+from database.models import (
+    UserProfile,
+    Message,
+)
+
+from database.serializers import (
+    UserProfileSerializer,
+    MessageSerializer,
+)
+
+
+class UserProfileViewSet(ModelViewSet):
+    """
+    Класс представления модели пользователей.
+    Полный CRUD сущности Пользователь
+    """
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    filterset_fields = [
+        "login"
+    ] 
+    
+class MessageViewSet(ModelViewSet):
+    """
+    Класс представления модели сообщений.
+    Полный CRUD сущности Сообщение
+    """
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    filter_backends = [
+        OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    filterset_fields = [
+        "sender",
+        "recipient",
+        "status",
+        "important",
+        "deleted",
+    ]
+    ordering_fields = [
+        "date_received",
+    ]

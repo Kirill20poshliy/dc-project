@@ -63,13 +63,13 @@ class Message(models.Model):
     date_received = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=50)
     body = models.TextField()
-    date_sent = models.DateTimeField()
+    date_sent = models.DateTimeField(auto_now=True)
     date_read = models.DateTimeField(null=True)
     MESSAGE_STATUSES = [
         ('прочитано', 'Прочитано'),
         ('не прочитано', 'Не прочитано'),
     ]
-    status = models.CharField(max_length=20, choices=MESSAGE_STATUSES)
+    status = models.CharField(max_length=20, choices=MESSAGE_STATUSES, default='Не прочитано')
     important = models.BooleanField()
     deleted = models.BooleanField(default=False)  # Поле для статуса удаления сообщения
 
