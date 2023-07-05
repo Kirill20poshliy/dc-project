@@ -42,19 +42,20 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Связь с моделью User из Django
-    first_name = models.CharField(max_length=50)  # Поле для имени пользователя
-    last_name = models.CharField(max_length=50)  # Поле для фамилии пользователя
-    middle_name = models.CharField(max_length=50)  # Поле для отчества пользователя
-    login = models.CharField(max_length=50)  # Поле для логина пользователя
-    password = models.CharField(max_length=50)  # Поле для пароля пользователя
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    middle_name = models.CharField(max_length=50)
+    login = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
     TYPE_CHOICES = (
         ('student', 'Студент'),
         ('employee', 'Сотрудник'),
     )
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)  # Поле для типа пользователя
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
 
 class Message(models.Model):
     message_id = models.AutoField(primary_key=True)
@@ -63,29 +64,28 @@ class Message(models.Model):
     date_received = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=50)
     body = models.TextField()
-    date_sent = models.DateTimeField(auto_now=True)
+    date_sent = models.DateTimeField(default=timezone.now)
     date_read = models.DateTimeField(null=True)
     MESSAGE_STATUSES = [
         ('прочитано', 'Прочитано'),
         ('не прочитано', 'Не прочитано'),
     ]
-    status = models.CharField(max_length=20, choices=MESSAGE_STATUSES, default='Не прочитано')
+    status = models.BooleanField(default=False)
     important = models.BooleanField()
-    deleted = models.BooleanField(default=False)  # Поле для статуса удаления сообщения
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.subject
 
 
 def get_attachment_upload_path(instance, filename):
-    # Формируем путь для сохранения вложения с использованием уникального идентификатора в базовой директории
-    return f'attachments/{instance.message_id}/{filename}'
+    return f'attachments/{instance.message.message_id}/{filename}'  # Исправлено: использование связи с сообщением
 
 class Attachment(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to=get_attachment_upload_path)
-    file_name = models.CharField(max_length=50)  # Имя файла вложения
-    file_type = models.CharField(max_length=20)  # Тип файла
+    file_name = models.CharField(max_length=50)
+    file_type = models.CharField(max_length=20)
 
     def __str__(self):
         return self.file_name
