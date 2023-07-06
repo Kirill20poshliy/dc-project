@@ -1,8 +1,10 @@
 from django.contrib import admin
 from .models import UserProfile, Message, Attachment
+
 """
-test
+Административные классы для управления моделями UserProfile, Message и Attachment в административном интерфейсе Django.
 """
+
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'middle_name', 'login', 'type')
