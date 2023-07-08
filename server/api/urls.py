@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     UserProfileViewSet,
     MessageViewSet,
+    AttachmentViewSet,
 )
 
 from drf_spectacular.views import (
@@ -27,6 +28,7 @@ app_name = 'apiapp'
 router =  DefaultRouter()
 router.register("profiles", UserProfileViewSet)
 router.register("messages", MessageViewSet)
+router.register("attachment", AttachmentViewSet)
 
 
 urlpatterns = [
