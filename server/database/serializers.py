@@ -10,7 +10,6 @@ from rest_framework import serializers
 from .models import (
     UserProfile,
     Message,
-    Attachment,
 )
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -20,7 +19,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = (
-            "user",
             "first_name",
             "last_name",
             "middle_name",
@@ -28,6 +26,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "type",
         )
         
+        
+# class AttachmentSerializer(serializers.ModelSerializer):
+#     """
+#     """
+#     class Meta:
+#         model = Attachment
+#         fields = (
+#             "file",
+#             "file_name",
+#             "file_type",
+#         )        
+
 
 class MessageSerializer(serializers.ModelSerializer):
     """
@@ -42,6 +52,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "date_received",
             "subject",
             "body",
+            "attach",
             "status",
             "important",
             "deleted",
