@@ -8,7 +8,6 @@
 Модель для профиля пользователя.
 
     Поля:
-    - user: связь с моделью User из Django
     - first_name: имя пользователя
     - last_name: фамилия пользователя
     - middle_name: отчество пользователя
@@ -41,20 +40,29 @@
 
 
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Связь с моделью User из Django
-    first_name = models.CharField(max_length=50)  # Поле для имени пользователя
-    last_name = models.CharField(max_length=50)  # Поле для фамилии пользователя
-    middle_name = models.CharField(max_length=50)  # Поле для отчества пользователя
-    login = models.CharField(max_length=50)  # Поле для логина пользователя
-    password = models.CharField(max_length=50)  # Поле для пароля пользователя
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    middle_name = models.CharField(max_length=50)
+    login = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
     TYPE_CHOICES = (
         ('student', 'Студент'),
         ('employee', 'Сотрудник'),
     )
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)  # Поле для типа пользователя
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+
+
+def get_attachment_upload_path(instance, filename): #https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to:~:text=The%20primary_key%20argument%20isn%E2%80%99t%20supported%20and%20will%20raise%20an%20error%20if%20used.
+    return 'attachments/{0}/{1}'.format(
+        instance.pk,
+        filename,
+    )
+
 
 class Message(models.Model):
     message_id = models.AutoField(primary_key=True)
@@ -63,29 +71,34 @@ class Message(models.Model):
     date_received = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=50)
     body = models.TextField()
-    date_sent = models.DateTimeField(auto_now=True)
+    date_sent = models.DateTimeField(default=timezone.now)
     date_read = models.DateTimeField(null=True)
     MESSAGE_STATUSES = [
         ('прочитано', 'Прочитано'),
         ('не прочитано', 'Не прочитано'),
     ]
-    status = models.CharField(max_length=20, choices=MESSAGE_STATUSES, default='Не прочитано')
-    important = models.BooleanField()
-    deleted = models.BooleanField(default=False)  # Поле для статуса удаления сообщения
-
+    status = models.BooleanField(default=False)
+    important = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+    deleted_sender = models.BooleanField(default=False)
+    deleted_recipient = models.BooleanField(default=False)
+    # attach = models.FileField(
+    #     upload_to=get_attachment_upload_path,
+    #     null=True,
+    #     blank=True,
+    #                           )
+    attach = models.ManyToManyField('Attachment', verbose_name="attachment")
+    
     def __str__(self):
         return self.subject
 
 
-def get_attachment_upload_path(instance, filename):
-    # Формируем путь для сохранения вложения с использованием уникального идентификатора в базовой директории
-    return f'attachments/{instance.message_id}/{filename}'
-
 class Attachment(models.Model):
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
+    # message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
+    # pk = models.AutoField(unique=True)
     file = models.FileField(upload_to=get_attachment_upload_path)
-    file_name = models.CharField(max_length=50)  # Имя файла вложения
-    file_type = models.CharField(max_length=20)  # Тип файла
+    file_name = models.CharField(max_length=50)
+    file_type = models.CharField(max_length=20)
 
     def __str__(self):
         return self.file_name

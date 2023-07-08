@@ -20,7 +20,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = (
-            "user",
             "first_name",
             "last_name",
             "middle_name",
@@ -28,6 +27,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "type",
         )
         
+        
+class AttachmentSerializer(serializers.ModelSerializer):
+    """
+    """
+    class Meta:
+        model = Attachment
+        fields = (
+            "file",
+            "file_name",
+            "file_type",
+        )        
+
 
 class MessageSerializer(serializers.ModelSerializer):
     """
@@ -35,6 +46,7 @@ class MessageSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Message
+        attach = AttachmentSerializer()
         fields = (
             "message_id",
             "sender",
@@ -42,6 +54,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "date_received",
             "subject",
             "body",
+            "attach",
             "status",
             "important",
             "deleted",

@@ -13,11 +13,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from database.models import (
     UserProfile,
     Message,
+    Attachment,
 )
 
 from database.serializers import (
     UserProfileSerializer,
     MessageSerializer,
+    AttachmentSerializer,
 )
 
 
@@ -31,6 +33,18 @@ class UserProfileViewSet(ModelViewSet):
     filterset_fields = [
         "login"
     ] 
+    
+class AttachmentViewSet(ModelViewSet):
+    """
+    Класс представления модели пользователей.
+    Полный CRUD сущности Вложение
+    """
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    # filter_backends = [
+    #     "file_name"
+    # ]
+    
     
 class MessageViewSet(ModelViewSet):
     """
