@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Message
+from .models import UserProfile, Message, Attachment
 
 """
 Административные классы для управления моделями UserProfile, Message в административном интерфейсе Django.
@@ -17,8 +17,8 @@ class MessageAdmin(admin.ModelAdmin):
     search_fields = ('subject', 'sender__user__username', 'recipient__user__username')
 
 
-# @admin.register(Attachment)
-# class AttachmentAdmin(admin.ModelAdmin):
-#     list_display = ('message', 'file', 'file_name', 'file_type')
+@admin.register(Attachment)
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ('message', 'file', 'file_name', 'file_type')
 
 

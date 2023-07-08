@@ -58,9 +58,8 @@ class UserProfile(models.Model):
 
 
 def get_attachment_upload_path(instance, filename): #https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to:~:text=The%20primary_key%20argument%20isn%E2%80%99t%20supported%20and%20will%20raise%20an%20error%20if%20used.
-    return 'attachments/{0}/{1}/{2}'.format(
-        instance.sender.pk,
-        instance.recipient.pk,
+    return 'attachments/{0}/{1}'.format(
+        instance.pk,
         filename,
     )
 
@@ -83,21 +82,23 @@ class Message(models.Model):
     deleted = models.BooleanField(default=False)
     deleted_sender = models.BooleanField(default=False)
     deleted_recipient = models.BooleanField(default=False)
-    attach = models.FileField(
-        upload_to=get_attachment_upload_path,
-        null=True,
-        blank=True,
-                              )
-
+    # attach = models.FileField(
+    #     upload_to=get_attachment_upload_path,
+    #     null=True,
+    #     blank=True,
+    #                           )
+    attach = models.ManyToManyField('Attachment', verbose_name="attachment")
+    
     def __str__(self):
         return self.subject
 
 
-# class Attachment(models.Model):
-#     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
-#     file = models.FileField(upload_to=get_attachment_upload_path)
-#     file_name = models.CharField(max_length=50)
-#     file_type = models.CharField(max_length=20)
+class Attachment(models.Model):
+    # message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
+    # pk = models.AutoField(unique=True)
+    file = models.FileField(upload_to=get_attachment_upload_path)
+    file_name = models.CharField(max_length=50)
+    file_type = models.CharField(max_length=20)
 
-#     def __str__(self):
-#         return self.file_name
+    def __str__(self):
+        return self.file_name
