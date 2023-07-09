@@ -1,0 +1,28 @@
+.mail-write-field {
+    flex-grow: 1;
+}
+
+.write-field {
+    margin: 1rem 1.75rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    gap: .5rem;
+    background-color: #fff;
+    flex-grow: 1;
+}
+
+.write-field .btn {
+    width: 10rem;
+    flex-grow: 1;
+    height:auto;
+    font-size: 1.25rem;
+}
+
+.write-field .btn-option {
+    color: #1667DE;
+}
+
+.write-field .row {
+    gap: .75rem;
+}
+

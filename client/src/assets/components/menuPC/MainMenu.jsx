@@ -1,21 +1,30 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import bmstuLogo from '../../icons/bmstu_logo 1.svg'
 import plusIcon from '../../icons/plus-icon.svg'
 import incomingIcon from '../../icons/incoming-icon.svg'
 import indicator from '../../icons/indicator.svg'
 import sentIcon from '../../icons/sent-icon.svg'
 import trashIcon from '../../icons/trash-icon.svg'
-import draftIcon from '../../icons/draft-icon.svg'
 import importantCheckedIcon from '../../icons/important-checked-icon.svg'
 import attachmentsIcon from '../../icons/attachments-icon.svg'
 import MemoryBar from "./MemoryBar";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import {useDispatch} from 'react-redux'
+import {filterHandler} from '../../../store/mailsSlice'
+import {useGetMailsQuery} from '../../../store/api'
+import { useSelector } from "react-redux";
 
-const MainMenu = ({mode, incoming}) => {
+const MainMenu = () => {
+
+    const user = useSelector(state => state.user.username)
+
+    const dispatch = useDispatch()
+    const {data = []} = useGetMailsQuery('')
 
     useEffect(() => {
-        mode('?deleted=false')
-    }, [])  
+        // dispatch(filterHandler(`?deleted=false&mailer.email_ne=${user}`))
+        dispatch(filterHandler(''))
+    }, [dispatch, user])
 
     return (
         <div className="menu-main column">
@@ -35,19 +44,19 @@ const MainMenu = ({mode, incoming}) => {
                     <div className="menu-folders column">
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => mode('?deleted=false')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler(`?deleted=false&mailer.email_ne=${user}`))}
+                            to='/main'
                         >
                             <div className="row btn-layout">
                                 <img className='icon' src={incomingIcon} alt="incoming"/>
                                 Входящие
                             </div>
                             {
-                                incoming ?
+                                data.length ?
                                 (
                                     <div className="row btn-layout">
                                         <img className='icon' src={indicator} alt="indicator"/>
-                                        {incoming}
+                                        {data.length}
                                     </div>
                                 )
                                 :
@@ -56,8 +65,8 @@ const MainMenu = ({mode, incoming}) => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => mode('?written')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler(`?deleted=false&mailer.email=${user}`))}
+                            to='/main'
                         >
                             <div className="row btn-layout">
                                 <img src={sentIcon} className='icon' alt=""></img>
@@ -66,25 +75,12 @@ const MainMenu = ({mode, incoming}) => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => mode('?deleted=true')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler('?deleted=true'))}
+                            to='/main'
                         >
                             <div className="row btn-layout">
                                 <img className='icon' src={trashIcon} alt=""></img>
                                 Удалённые
-                            </div>
-                            {/* <button className="btn btn-subsidary">
-                                Очистить
-                            </button> */}
-                        </NavLink>
-                        <NavLink 
-                            className="btn btn-switch-menu" 
-                            onClick={() => mode('?drafts')}
-                            to='/'
-                        >
-                            <div className="row btn-layout">
-                                <img className='icon' src={draftIcon} alt=""></img>
-                                Черновики
                             </div>
                         </NavLink>
                     </div>
@@ -92,22 +88,22 @@ const MainMenu = ({mode, incoming}) => {
                     <div className="row btn-layout space-between">
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => mode('?important=true&deleted=false')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler('?important=true&deleted=false'))}
+                            to='/main'
                         >
                             <img className='icon' src={importantCheckedIcon} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => mode('?read=false')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler('?read=false&deleted=false'))}
+                            to='/main'
                         >
                             <img className='icon' src={indicator} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => mode('')}
-                            to='/'
+                            onClick={() => dispatch(filterHandler('?deleted=false&attachments_ne='))}
+                            to='/main'
                         >
                             <img className='icon' src={attachmentsIcon} alt=""/>
                         </NavLink>
@@ -118,7 +114,6 @@ const MainMenu = ({mode, incoming}) => {
             </div>
         </div>
     )
-
 }
 
 export default MainMenu 

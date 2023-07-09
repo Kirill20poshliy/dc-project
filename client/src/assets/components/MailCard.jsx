@@ -4,16 +4,34 @@ import trashIcon from '../icons/trash-icon-blue.svg'
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import downloadIcon from '../icons/download-icon.svg'
 import shareIcon from '../icons/share-icon-blue.svg'
+import { useDispatch, useSelector} from 'react-redux'
+import {useActionMailsMutation, useDeleteHardMailMutation} from '../../store/api'
+import {resetHandler} from "../../store/mailsSlice";
 
 const MailCard = (props) => {
 
     const [menuActive, setMenu] = useState('')
+    const filter = useSelector(state => state.mails.filter)
+    const dispatch = useDispatch()
+    const [deleteHardMail] = useDeleteHardMailMutation()
+    const [actionMail] = useActionMailsMutation()
 
     const menuHandler = () => {
         if (menuActive === '') {
             setMenu('active')
         } else {
             setMenu('')
+        }
+    }
+
+    const deleteHandler = async () => {
+        if (filter === '?deleted=true') {
+            await deleteHardMail(props.letter.id).unwrap()
+            dispatch(resetHandler())
+        } else {
+            const prop = {id: props.letter.id, action: {deleted: true}}
+            await actionMail(prop).unwrap()
+            dispatch(resetHandler())
         }
     }
 
@@ -70,7 +88,11 @@ const MailCard = (props) => {
                                 <button className='btn btn-option content-center btn-layout' title="Ответить">
                                     <img className='icon' src={resendIcon} alt='Ответить'/>
                                 </button>
-                                <button className='btn btn-option content-center btn-layout' title="Удалить">
+                                <button 
+                                    className='btn btn-option content-center btn-layout' 
+                                    title="Удалить"
+                                    onClick={() => deleteHandler()}
+                                >
                                     <img className='icon' src={trashIcon} alt='Удалить'/>
                                 </button>
                                 <button className='btn btn-option content-center btn-layout' title="Переслать">

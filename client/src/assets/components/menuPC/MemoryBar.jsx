@@ -1,18 +1,9 @@
-import React, {useState, useEffect} from "react";
+import { useSelector } from "react-redux"
 
 const MemoryBar = () => {
 
     const totalMemory = 200
-    const [memory, setMemory] = useState(0)
-
-    useEffect(() => {
-        fetch('http://localhost:3000/user')
-        .then(response => response.json())
-        .then(data => {
-            setMemory(data.occupiedMemory)
-        })
-        .catch(err => console.log(err))        
-    }, [])
+    const memory = useSelector(state => state.user.memory)
 
     let percent = (memory*100)/totalMemory
 

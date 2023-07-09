@@ -18,9 +18,7 @@ const MenuForPC = (props) => {
                 settings={settings} 
                 setSettings={useSetSettings}
             />
-            <MainMenu 
-                incoming={props.incoming}
-                mode={props.listFetch}
+            <MainMenu
                 writeMail={props.writeMail}
             />
             {settings ? (<SettingsMenu active={settings} setSettings={useSetSettings}/>) : ('')}

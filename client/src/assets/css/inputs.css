@@ -5,9 +5,15 @@ input::-webkit-input-placeholder {
     color: #1667DE;
 }
 
-input[type='search'] {
+textarea::-moz-placeholder {
+    color: #1667DE;
+}
+textarea::-webkit-input-placeholder {
+    color: #1667DE;
+}
+
+input {
     height: 2.5rem;
-    width: 21.5rem;
     border-radius: .75rem;
     border: .175rem solid #1667DE;
     padding: 0rem 1rem;
@@ -16,8 +22,24 @@ input[type='search'] {
     outline: none;
 }
 
-input[type='search']:hover, input[type='search']:focus {
+input[type='search'] {
+    width: 21.5rem;
+}
+
+input:hover, input:focus {
     background-color: #fff;
+}
+
+textarea {
+    border-radius: .75rem;
+    border: .175rem solid #1667DE;
+    padding: .75rem 1rem;
+    color: #1667DE;
+    background-color: #F0F6FF;
+    outline: none;
+    max-width: inherit;
+    resize: none;
+    flex-grow: 1;
 }
 
 .checkbox {

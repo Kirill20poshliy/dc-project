@@ -1,17 +1,29 @@
 import React from "react";
 import logoutIcon from '../../icons/logout-icon.svg'
+import { logOut } from "../../../store/userSlice";
+import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 function SettingsMenu(props) {
 
+    const dispatch = useDispatch()
+
+    const logOutHandler = () => {
+        props.setSettings(false)
+        delete localStorage.credentials
+        dispatch(logOut())
+    }
+
     return (
         <div className="settings-menu column">
-            <button 
+            <NavLink 
+                to='/login'
                 className="btn btn-switch-menu space-between" 
-                onClick={() => props.setSettings(false)}
+                onClick={() => logOutHandler()}
             >
                 Выйти
                 <img className='icon' src={logoutIcon} alt=""/>
-            </button>
+            </NavLink>
         </div>
     )
 

@@ -1,21 +1,12 @@
-import React, {useState, useEffect} from "react";
-import userIcon from "../img/avatar.jpg"
+import React, {useState} from "react";
+// import userIcon from "../img/avatar.jpg"
+import { useSelector } from "react-redux";
 
 const Header = () => {
 
-    const [userName, setName] = useState('')
-    const [userAvatar, setAvatar] = useState(userIcon)
+    const userAvatar = ''
     const [search, setSerach] = useState('')
-
-    useEffect(() => {
-        fetch('http://localhost:3000/user')
-        .then(response => response.json())
-        .then(data => {
-            setName(data.name)
-            setAvatar(data.avatar ? data.avatar : '')
-        })
-        .catch(err => console.log(err))
-    }, [])
+    const userName = useSelector(state => state.user.username)
 
     return(
         <header className="header row space-between">
@@ -26,6 +17,7 @@ const Header = () => {
                 value={search}
                 onChange={(e) => setSerach(e.target.value)}
             />
+            {/* <h1 style={{fontWeight: 900}}>МГТУ им. Н.Э. Баумана</h1> */}
             <div className="row btn-layout">
                 {userName ? userName : 'User'}
                 <div className="user-avatar row content-center">

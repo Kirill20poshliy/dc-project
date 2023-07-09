@@ -30,7 +30,8 @@
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  line-height: 2.25rem;
 }
 
 h2 {
@@ -67,10 +68,13 @@ h2 {
 
 @import url('./layouts.css');
 @import url('./menu-pc.css');
-@import url('../global/main-field.css');
+@import url('./main-field.css');
 @import url('../buttons.css');
 @import url('../inputs.css');
 @import url('../avatar.css');
-@import url('../global/preloader.css')
+@import url('./preloader.css');
+@import url('./login-page.css');
+@import url('../write-field.css');
+@import url('./modal.css');
 
 

@@ -1,21 +1,29 @@
 import React from "react";
 import MailItem from './MailItem'
+import {useSelector} from 'react-redux'
+import {useGetMailsQuery} from '../../store/api'
 
 const MailList = (props) => {
 
-    const {mails, checkAll, check, mapping} = props
+    const {mapping} = props
+    const filter = useSelector(state => state.mails.filter)
+    const {data, isError, isLoading} = useGetMailsQuery(filter)
 
     return (
         <div className="column mail-list">
-            {mails.map(mail => (
-                <MailItem 
-                    key={mail.time} 
-                    {...mail}
-                    checkAll={checkAll} 
-                    checked={check}
-                    mapping={mapping}
-                />
-            ))}
+            {isError && <p>Ошибка загрузки...</p>}
+            {!isLoading 
+                ?   <>
+                        {data.results.map(mail => (
+                            <MailItem 
+                                key={mail.date_received} 
+                                {...mail}
+                                mapping={mapping}
+                            />                    
+                        ))}
+                        {!data.count && !isLoading ? <p>Список пуст</p> : ''}
+                    </> 
+                : <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
         </div>
     )
 
