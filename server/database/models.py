@@ -40,16 +40,17 @@
 
 
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 
 class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50)
-    login = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
+    # login = models.CharField(max_length=50)
+    # password = models.CharField(max_length=50)
     TYPE_CHOICES = (
         ('student', 'Студент'),
         ('employee', 'Сотрудник'),
@@ -59,7 +60,7 @@ class UserProfile(models.Model):
 
 def get_attachment_upload_path(instance, filename): #https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to:~:text=The%20primary_key%20argument%20isn%E2%80%99t%20supported%20and%20will%20raise%20an%20error%20if%20used.
     return 'attachments/{0}/{1}'.format(
-        instance.pk,
+        hash(filename),
         filename,
     )
 

@@ -7,7 +7,7 @@ from .models import UserProfile, Message, Attachment
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'middle_name', 'login', 'type')
+    list_display = ('first_name', 'last_name', 'middle_name', 'type', 'user')
 
 
 @admin.register(Message)
