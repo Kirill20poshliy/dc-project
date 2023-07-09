@@ -1,56 +1,55 @@
-import React, {Component} from "react";
-import resendIcon from '../icons/resend-icon.svg'
+import React, {useState} from "react";
+import shareIcon from '../icons/share-icon.svg'
 import trashIcon from '../icons/trash-icon.svg'
 import writtenIcon from '../icons/written-icon.svg'
 
-class MailOptionsMenu extends Component {
+const MailOptionsMenu = (props) => {
 
-    state = {
-        active: false,
+    const [active, setActive] = useState(false)
+
+    const checkHandler = () => {
+        setActive(active ? false : true)
+        props.check(active)
     }
 
-    checkHandler = () => {
-        this.setState({active: this.state.active ? false : true})
-        this.props.check(this.state.active)
+    const deleteHandler = () => {
+        props.delete()
     }
 
-    render () {
-
-        const {active} = this.state
-
-        return (
-            <div className="row mail-options">
-                    <input 
-                        type="checkbox"
-                        name="check"
-                        onChange={() => this.checkHandler()}
-                    />
-                    {/* <label htmlFor="check"/>                     */}
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={resendIcon} alt=""/>
-                    Переслать
-                </button>
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={trashIcon} alt=""/>
-                    Удалить
-                </button>
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={writtenIcon} alt=""/>
-                    Прочитать
-                </button>
-            </div>
-        )
-
-    }
+    return (
+        <div className="row mail-options">
+            <label className="checkbox">
+                <input 
+                    type="checkbox"
+                    name="check"
+                    onChange={() => checkHandler()}
+                />
+                <div className="checkmark"></div>
+            </label>
+            <button 
+                className="btn btn-layout btn-context" 
+                disabled={(active || props.activeMenu) && props.pageMode !== 'deleted' ? "" : "disabled"}
+            >
+                <img className='icon' src={shareIcon} alt=""/>
+                Переслать
+            </button>
+            <button 
+                className="btn btn-layout btn-context" 
+                disabled={active || props.activeMenu ? "" : "disabled"}
+                onClick={() => deleteHandler()}
+            >
+                <img className='icon' src={trashIcon} alt=""/>
+                Удалить
+            </button>
+            <button 
+                className="btn btn-layout btn-context" 
+                disabled={(active || props.activeMenu) && props.pageMode !== 'deleted' ? "" : "disabled"}
+            >
+                <img className='icon' src={writtenIcon} alt=""/>
+                Прочитать
+            </button>
+        </div>
+    )
 
 }
 

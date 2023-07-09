@@ -118,3 +118,21 @@
     opacity: .5;
     cursor: default;
 }
+
+/* btn-attachment */
+
+.btn-attachment {
+    background-color: #D7E9FF;
+    transition: all .15s ease-out;
+    padding: 1rem;
+    gap: .75rem;
+    color: #1667DE;
+}
+
+.btn-attachment:hover {
+    background-color: #EBF4FF;
+}
+
+.btn-attachment:active {
+    background-color: #fff;
+}

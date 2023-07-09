@@ -1,13 +1,55 @@
 .mail-item {
-    width: 21.5rem;
+    position: relative;
+    cursor: pointer;
+    /* width: 21.5rem; */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+    
+.mail-item input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+    
+.mail-item input[type='radio']:checked ~ .radiomark {
+    box-shadow: 0px 5px 1rem rgba(0, 0, 0, 0.25);
+    transform: translate(0, -.25rem);
+    z-index: 10;
+}
+
+.mail-item input[type='radio']:checked ~ .radiomark:after {
+    opacity: 1;
+}
+
+.mail-item:hover input[type='radio'] ~ .radiomark {
+    box-shadow: 0px 5px .5rem rgba(0, 0, 0, 0.25);
+    transform: translate(0, -.125rem);
+    z-index: 5;
+
+}
+
+.mail-item:hover input[type='radio']:checked ~ .radiomark {
+    box-shadow: 0px 5px 1rem rgba(0, 0, 0, 0.25);
+    transform: translate(0, -.25rem);
+    z-index: 10;
+}
+
+.mail-item .radiomark {
+    position: relative;
+    padding: 1.25rem;
     background-color: #fff;
     border-radius: .75rem;
-    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
     color:#1A1A1A;
     gap: 1.25rem;
     font-weight: 600;
-    transition: all .15s ease-out;
-    position: relative;
+    transition: all .3s ease-out;
 }
 
 .op-5 {
@@ -21,13 +63,4 @@
 
 .title {
     line-height: 1.5rem;
-
-}
-
-.mail-item:hover {
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.25);
-}
-
-.mail-item-checked {
-    box-shadow: 0px 5px 24px rgba(0, 0, 0, 0.25);
 }

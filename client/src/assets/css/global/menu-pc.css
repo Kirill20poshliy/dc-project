@@ -1,0 +1,10 @@
+.menu-pc {
+    display: grid;
+    grid-template-columns: 5.75rem 16.5rem;
+    height: inherit;
+}
+
+@import url('../menu-pc/menu-left.css');
+@import url('../menu-pc/menu-main.css');
+@import url('../menu-pc/memory.css');
+@import url('../menu-pc/settings-menu.css');

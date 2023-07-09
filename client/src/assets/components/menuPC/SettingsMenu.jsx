@@ -1,5 +1,5 @@
 import React from "react";
-import logoutIcon from '../icons/logout-icon.svg'
+import logoutIcon from '../../icons/logout-icon.svg'
 
 function SettingsMenu(props) {
 
@@ -10,7 +10,7 @@ function SettingsMenu(props) {
                 onClick={() => props.setSettings(false)}
             >
                 Выйти
-                <img src={logoutIcon} alt=""/>
+                <img className='icon' src={logoutIcon} alt=""/>
             </button>
         </div>
     )

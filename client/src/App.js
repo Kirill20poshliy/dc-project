@@ -1,44 +1,94 @@
-import React, {Component} from 'react';
-import MenuLeft from './assets/components/MenuLeft';
-import MainMenu from './assets/components/MainMenu';
-import './assets/css/App.css';
-import SettingsMenu from './assets/components/SettingsMenu';
-import Header from './assets/components/Header';
-import MailOptionsMenu from './assets/components/MailOprionsMenu';
-import MailList from './assets/components/MailList';
+import React, {useState, useCallback} from 'react';
+import './assets/css/global/App.css';
+import MenuForPC from './assets/components/global/MenuForPC';
+import MainField from './assets/components/global/MainField';
 
-class App extends Component {
 
-  state = {
-    incoming: 0,
-    settings: false,
-    checkAllItems: false,
-    checkedItem: '',
+const App = () => {
+
+  const [incoming, setIncoming] = useState(0)
+  const [pageMode, setPageMode] = useState('')
+  const [mailList, setMailList] = useState([])
+
+  const incomingHandler = () => {
+    fetch('http://localhost:3000/mails')
+    .then(response => response.json())
+    .then(data => {
+        let incoming = 0
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i].read) {
+                incoming += 1
+            }
+        }
+        setIncoming(incoming)
+    })
+    .catch(err => console.log(err))
   }
 
-  setSettings = (e) => {
-    this.setState({settings: e})
+  const listFetch = useCallback((listFilter) => {
+    fetch(`http://localhost:3000/mails${listFilter}`)
+    .then(response => response.json())
+    .then(mails => {
+      if (listFilter === '') {
+        for (let i = 0; i < mails.length; i++) {
+          if (!mails[i].attachments.length) {
+            mails = mails.filter((mail) => (mail.attachments.length !== 0 && mail.deleted === false))
+          }
+        }
+      }
+      if (listFilter === '?deleted=true') {
+        setPageMode('deleted')
+      } else {
+        setPageMode('')
+      }
+      setMailList(mails)
+    })
+    .catch((err) => console.log(err))   
+  }, [])
+
+  // const listFetch = (listFilter) => {
+  //   fetch(`http://localhost:3000/mails${listFilter}`)
+  //   .then(response => response.json())
+  //   .then(mails => {
+  //     if (listFilter === '') {
+  //       for (let i = 0; i < mails.length; i++) {
+  //         if (!mails[i].attachments.length) {
+  //           mails = mails.filter((mail) => (mail.attachments.length !== 0 && mail.deleted === false))
+  //         }
+  //       }
+  //     }
+  //     if (listFilter === '?deleted=true') {
+  //       setPageMode('deleted')
+  //     } else {
+  //       setPageMode('')
+  //     }
+  //     setMailList(mails)
+  //   })
+  //   .catch((err) => console.log(err))
+  // }
+
+  const mailWriteHandler = () => {
+    setPageMode('writeMail') 
   }
 
-  checkItemsHandler = (state) => {
-      this.setState({checkAllItems: state ? false : true})
-  }
+  return (
 
-  render () {
+    <div className="App">
+      <MenuForPC 
+        incoming={incoming}
+        listFetch={listFetch}
+        writeMail={mailWriteHandler}
+      />
+      <MainField 
+        incoming={incomingHandler} 
+        mails={mailList} 
+        listFetch={listFetch}
+        pageMode={pageMode}
+      />
+    </div>
 
-    const {incoming, settings, checkedItem, checkAllItems} = this.state
+  )  
 
-    return (
-      <div className="App">
-        <MenuLeft settings={settings} setSettings={this.setSettings}/>
-        <MainMenu incoming={incoming}/>
-        {settings ? (<SettingsMenu active={settings} setSettings={this.setSettings}/>) : ('')}
-        <Header/>
-        <MailOptionsMenu check={this.checkItemsHandler}/>
-        <MailList check={checkedItem} checkAll={checkAllItems}/>
-      </div>
-    );    
-  }
 }
 
 export default App;
