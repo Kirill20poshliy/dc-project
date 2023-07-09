@@ -12,7 +12,6 @@ from .views import (
 
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularRedocView,
     SpectacularSwaggerView
 )
 
