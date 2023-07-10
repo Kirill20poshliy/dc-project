@@ -8,6 +8,7 @@ from .views import (
     UserProfileViewSet,
     MessageViewSet,
     AttachmentViewSet,
+    UserViewSet,
 )
 
 from drf_spectacular.views import (
@@ -28,6 +29,7 @@ router =  DefaultRouter()
 router.register("profiles", UserProfileViewSet)
 router.register("messages", MessageViewSet)
 router.register("attachment", AttachmentViewSet)
+router.register("user", UserViewSet)
 
 
 urlpatterns = [

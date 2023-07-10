@@ -16,12 +16,23 @@ from database.models import (
     Attachment,
 )
 
+from django.contrib.auth.models import User
+
 from database.serializers import (
     UserProfileSerializer,
     MessageSerializer,
     AttachmentSerializer,
+    UserSerializer
 )
 
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filterset_field = [
+        "username",
+        "id"
+    ]
 
 class UserProfileViewSet(ModelViewSet):
     """
@@ -31,7 +42,8 @@ class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     filterset_fields = [
-        "user"
+        "user",
+        "type",
     ] 
     
 class AttachmentViewSet(ModelViewSet):
