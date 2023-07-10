@@ -1,0 +1,22 @@
+.mail-list {
+    overflow-y: scroll;
+    padding: 1rem 1rem 1rem 1.75rem;
+    grid-column: 1/1;
+    grid-row: 2/2;
+    gap: .5rem;
+    flex-grow: 1;
+  }
+
+.mail-list::-webkit-scrollbar {
+    display: none;
+}
+
+.mail-list > p {
+  align-self: center;
+  color: #1667DE;
+  font-weight: 600;
+}
+
+.mail-list > .lds-ellipsis {
+  align-self: center;
+}

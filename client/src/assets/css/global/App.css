@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #D7E9FF #fff;
+}
+
+*::-webkit-scrollbar {
+  width: .5rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  padding: 1rem 1rem;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #D7E9FF;
+  opacity: .5;
+  border-radius: .75rem;
+  border: 0;
+}
+
+*::-webkit-scrollbar-button:single-button {
+  height: 1rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.25rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+.op-0 {
+  opacity: 0;
+}
+
+.op-1 {
+  opacity: 1;
+}
+
+.op-5 {
+  opacity: .5;
+}
+
+.color-primary {
+  color: #1667DE;
+}
+
+.App {
+  display: grid;
+  grid-template-columns: 22.25rem auto;
+  width: 100%;
+  height: 100vh;
+}
+
+.icon {
+  height: 1rem;
+}
+
+
+@import url('./layouts.css');
+@import url('./menu-pc.css');
+@import url('./main-field.css');
+@import url('../buttons.css');
+@import url('../inputs.css');
+@import url('../avatar.css');
+@import url('./preloader.css');
+@import url('./login-page.css');
+@import url('../write-field.css');
+@import url('./modal.css');
+
+

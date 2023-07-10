@@ -1,0 +1,46 @@
+.login-page {
+    height: 100vh;
+    width: 100%;
+    font-size: 2.25rem;
+    color: #1667DE;
+    gap: 2rem;
+}
+
+.login-page form {
+    gap: .75rem;
+    background-color: #fff;
+    padding: 1.25rem;
+    width: min(95%, 26.25rem);
+    border-radius: 1.25rem;
+}
+
+form input {
+    width: 100%;
+}
+
+.login-page .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 1.25rem;
+}
+
+.login-page .dash {
+    width: 100%;
+    height: .25rem;
+    background-color: #1667DE;
+}
+
+.login-page .lo-1 {
+    gap: .75rem;
+}
+
+.login-page .lo-2 {
+    gap: .5rem;
+}
+
+@media screen and (max-width: 480px) {
+    .login-page h1 {
+        font-size: 2rem;
+    }
+}

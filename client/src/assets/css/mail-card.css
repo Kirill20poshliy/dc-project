@@ -1,0 +1,163 @@
+.mail-card {
+    grid-column: 2/2;
+    grid-row: 2/2;
+    padding: 1rem 1.75rem 1rem 0;
+    overflow-y: scroll;
+}
+
+.mail-card::-webkit-scrollbar {
+    display: none;
+}
+
+.card {
+    position: relative;
+    background-color: #fff;
+    min-height: 100%;
+    border-radius: .75rem;
+}
+
+.card-active {
+    padding: 1.25rem 1.25rem 5rem 1.25rem;
+    gap: 1rem;
+    animation: card-fade-in .6s ease-out;
+}
+
+.card-active > p {
+    white-space: pre-wrap;
+}
+
+.card-active > .heading {
+    font-weight: 600;
+    gap: .5rem;
+}
+
+.card-active > .heading p {
+    opacity: .5;
+}
+
+.card-active .btn-attachment.last {
+    background-color: #1667DE;
+    color: #fff;
+    font-weight: 600;
+}
+
+.card-active .btn-attachment.last:hover {
+    background-color: #5d9ae4;
+}
+
+.card-active .btn-attachment.last:active {
+    background-color: #D7E9FF;
+}
+
+.card-active hr {
+    height: .125rem;
+    background-color: #1667DE;
+    width: 100%;
+    border: 0;
+}
+
+.card-active > .heading > .row {
+    width: 100%
+}
+
+.card-menu {
+    position: fixed;
+    bottom: 1rem;
+    right: -14.3rem;
+    gap: 2.6rem;
+    transition: .3s;
+    animation: menu-fade-in .6s ease-out;
+    z-index: 15;
+}
+
+.card-menu.active {
+    right: 0;
+    gap: 1rem;
+    transition: .3s;
+}
+
+.card-menu .burger {
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    position: relative;
+    background-color: #D7E9FF;
+    padding: .5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: .75rem;
+    align-self: center;
+}
+
+.card-menu .burger::before {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: .25rem;
+    border-radius: 1rem;
+    background-color: #1667DE;
+    transform: translateY(-.5rem);
+    transition: .15s;
+}
+
+.card-menu .burger::after {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: .25rem;
+    border-radius: 1rem;
+    background-color: #1667DE;
+    transform: translateY(.5rem);
+    transition: .15s;
+    box-shadow: 0 -.5rem 0 #1667DE;
+}
+
+.card-menu .burger.active::before {
+    transform: translateY(0) rotate(45deg);
+}
+
+.card-menu .burger.active::after {
+    transform: translateY(0) rotate(-45deg);
+    box-shadow: 0 0 0 black;
+}
+
+.card-menu .body {
+    background-color: #1667DE;
+    border-radius: 1.75rem 0 0 1.75rem;
+    padding: 1rem 2rem 1rem 1rem;
+    gap: .5rem;
+}
+
+.card-menu .none {
+    display: none;
+}
+
+.op-0 {
+    opacity: 0;
+    transition: .5s;
+}
+
+.card-menu .btn {
+    padding: 1.25rem;
+}
+
+@keyframes menu-fade-in {
+    0% {
+        right: -16rem; 
+        opacity: 0;
+    }
+    100% {
+        right: -14.3rem; 
+        opacity: 1;
+    }
+}
+
+@keyframes card-fade-in {
+    0% { 
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

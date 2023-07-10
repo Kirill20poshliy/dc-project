@@ -1,0 +1,15 @@
+.user-avatar {
+    border: .175rem solid #1667DE;
+    border-radius: 1000rem;
+    background-color: #D7E9FF;
+    width: 1.75rem;
+    height: 1.75rem;
+    overflow: hidden;
+    color: #1667DE;
+    font-size: .75rem;
+  }
+  
+  .user-avatar > img {
+    width: inherit;
+    height: auto;
+  }

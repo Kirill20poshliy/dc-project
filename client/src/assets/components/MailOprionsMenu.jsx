@@ -1,56 +1,54 @@
-import React, {Component} from "react";
-import resendIcon from '../icons/resend-icon.svg'
+import React from "react";
+import shareIcon from '../icons/share-icon.svg'
 import trashIcon from '../icons/trash-icon.svg'
-import writtenIcon from '../icons/written-icon.svg'
+import {useDispatch, useSelector} from "react-redux";
+import {resetHandler, setModal} from "../../store/mailsSlice";
+import {useActionMailsMutation, useDeleteHardMailMutation} from '../../store/api'
 
-class MailOptionsMenu extends Component {
+const MailOptionsMenu = () => {
 
-    state = {
-        active: false,
+    const activeMenu = useSelector(state => state.mails.isChecked)
+    const checkedItems = useSelector(state => state.mails.checkedMails)
+    const filter = useSelector(state => state.mails.filter)
+    const dispatch = useDispatch()
+    const [actionMail] = useActionMailsMutation()
+    const [deleteHardMail] = useDeleteHardMailMutation()
+
+    const deleteHandler = async () => {
+        if (filter === '?deleted=true') {
+            for (let i = 0; i < checkedItems.length; i++) {
+                await deleteHardMail(checkedItems[i]).unwrap()
+            }
+            dispatch(resetHandler())
+        } else {
+            for (let i = 0; i < checkedItems.length; i++) {
+                const prop = {id: checkedItems[i], action: {deleted: true}}
+                await actionMail(prop).unwrap()
+            }
+            dispatch(resetHandler())
+        }
     }
 
-    checkHandler = () => {
-        this.setState({active: this.state.active ? false : true})
-        this.props.check(this.state.active)
-    }
-
-    render () {
-
-        const {active} = this.state
-
-        return (
-            <div className="row mail-options">
-                    <input 
-                        type="checkbox"
-                        name="check"
-                        onChange={() => this.checkHandler()}
-                    />
-                    {/* <label htmlFor="check"/>                     */}
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={resendIcon} alt=""/>
-                    Переслать
-                </button>
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={trashIcon} alt=""/>
-                    Удалить
-                </button>
-                <button 
-                    className="btn btn-layout btn-context" 
-                    disabled={active ? "" : "disabled"}
-                >
-                    <img src={writtenIcon} alt=""/>
-                    Прочитать
-                </button>
-            </div>
-        )
-
-    }
+    return (
+        <div className="row mail-options">
+            <button 
+                className="btn btn-layout btn-context" 
+                disabled={activeMenu && filter !== '?deleted=true' ? "" : "disabled"}
+                onClick={() => dispatch(setModal())}
+            >
+                <img className='icon' src={shareIcon} alt=""/>
+                Переслать
+            </button>
+            <button 
+                className="btn btn-layout btn-context" 
+                disabled={activeMenu ? "" : "disabled"}
+                onClick={() => deleteHandler()}
+            >
+                <img className='icon' src={trashIcon} alt=""/>
+                Удалить
+            </button>
+        </div>
+    )
 
 }
 

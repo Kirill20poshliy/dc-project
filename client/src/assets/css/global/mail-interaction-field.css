@@ -1,0 +1,11 @@
+.mail-interaction-field {
+    display: grid;
+    grid-template-columns: 24.25rem auto;
+    grid-template-rows: 2.75rem auto;
+    overflow: hidden;
+}
+
+@import url('../mail-options.css');
+@import url('../mail-item.css');
+@import url('../mail-card.css');
+@import url('../mail-list.css');

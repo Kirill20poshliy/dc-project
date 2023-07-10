@@ -1,55 +1,32 @@
-import React, {Component} from "react";
+import React from "react";
 import MailItem from './MailItem'
+import {useSelector} from 'react-redux'
+import {useGetMailsQuery} from '../../store/api'
 
-class MailList extends Component {
+const MailList = (props) => {
 
-    state = {
-        mails: [
-            {
-                mailer: 'John Doe', 
-                mailerAvatar: '', 
-                title: 'Access to the dc-project group was granted', 
-                time: '12:33',
-                id: 5,
-            },
-            {
-                mailer: 'John Doe', 
-                mailerAvatar: '', 
-                title: 'Access to the dc-project group was granted', 
-                time: '12:32',
-                id: 3,
-            },
-            {
-                mailer: 'John Doe', 
-                mailerAvatar: '', 
-                title: 'Access to the dc-project group was granted', 
-                time: '12:30',
-                id: 2,
-            },
-            {
-                mailer: 'John Doe', 
-                mailerAvatar: '', 
-                title: 'Access to the dc-project group was granted', 
-                time: '12:31',
-                id: 1,
-            },
-        ],
-    }
+    const {mapping} = props
+    const filter = useSelector(state => state.mails.filter)
+    const {data, isError, isLoading} = useGetMailsQuery(filter)
 
-    render () {
+    return (
+        <div className="column mail-list">
+            {isError && <p>Ошибка загрузки...</p>}
+            {!isLoading 
+                ?   <>
+                        {data.results.map(mail => (
+                            <MailItem 
+                                key={mail.date_received} 
+                                {...mail}
+                                mapping={mapping}
+                            />                    
+                        ))}
+                        {!data.count && !isLoading ? <p>Список пуст</p> : ''}
+                    </> 
+                : <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
+        </div>
+    )
 
-        const {mails} = this.state
-
-        return (
-            <div className="column mail-list">
-                {mails.map(mail => (
-                    <MailItem key={mail.time} {...mail} checkAll={this.props.checkAll}/>
-                ))}
-            </div>
-        )
-
-    }
-    
 }
 
 export default MailList

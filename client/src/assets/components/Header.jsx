@@ -1,43 +1,31 @@
-import React, {Component} from "react";
-import userIcon from "../img/avatar.jpg"
+import React, {useState} from "react";
+// import userIcon from "../img/avatar.jpg"
+import { useSelector } from "react-redux";
 
-class Header extends Component {
+const Header = () => {
 
-    state = {
-        userName: 'Яковлев С.А.',
-        userAvatar: userIcon,
-        search: '',
-    }
+    const userAvatar = ''
+    const [search, setSerach] = useState('')
+    const userName = useSelector(state => state.user.username)
 
-    // handleKey = (event) => {
-    //     if (event.key === 'Enter') {
-    //         this.props.searchHandler(this.state.search)
-    //     }
-    // }
-
-    render () {
-
-        const {userName, userAvatar} = this.state
-
-        return(
-            <div className="header row space-between">
-                <input 
-                    type="search" 
-                    placeholder="Поиск"
-                    value={this.state.search}
-                    onChange={(e) => this.setState({search: e.target.value})}
-                    onKeyDown={this.handleKey}
-                />
-                <div className="row btn-layout">
-                    {userName ? userName : 'User'}
-                    <div className="user-avatar row content-center">
-                        {userAvatar ? <img src={userAvatar} alt="Аватар"/> : "?"}
-                    </div>
+    return(
+        <header className="header row space-between">
+            <input 
+                type="search"
+                id="search"
+                placeholder="Поиск"
+                value={search}
+                onChange={(e) => setSerach(e.target.value)}
+            />
+            {/* <h1 style={{fontWeight: 900}}>МГТУ им. Н.Э. Баумана</h1> */}
+            <div className="row btn-layout">
+                {userName ? userName : 'User'}
+                <div className="user-avatar row content-center">
+                    {userAvatar ? <img src={userAvatar} alt="Аватар"/> : userName[0]}
                 </div>
             </div>
-        )
-
-    }
+        </header>
+    )
 
 }
 

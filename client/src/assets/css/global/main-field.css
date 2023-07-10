@@ -1,0 +1,8 @@
+.main-field {
+    display: grid;
+    grid-template-rows: 5rem auto;
+    height: 100vh;
+}
+
+@import url('../header.css');
+@import url('./mail-interaction-field.css');
