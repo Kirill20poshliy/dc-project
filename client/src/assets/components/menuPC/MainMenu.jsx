@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import bmstuLogo from '../../icons/bmstu_logo 1.svg'
 import plusIcon from '../../icons/plus-icon.svg'
 import incomingIcon from '../../icons/incoming-icon.svg'
@@ -16,15 +16,19 @@ import { useSelector } from "react-redux";
 
 const MainMenu = () => {
 
-    const user = useSelector(state => state.user.username)
+    const user = useSelector(state => state.user.id)
+    const [userId, setUserId] = useState('')
 
     const dispatch = useDispatch()
     const {data = []} = useGetMailsQuery('')
 
     useEffect(() => {
-        // dispatch(filterHandler(`?deleted=false&mailer.email_ne=${user}`))
-        dispatch(filterHandler(''))
-    }, [dispatch, user])
+        user && setUserId(user)
+    }, [user])
+
+    // useEffect(() => {
+    //     dispatch(filterHandler(`?deleted=false&recipient=${userId}`))
+    // }, [dispatch, userId])
 
     return (
         <div className="menu-main column">

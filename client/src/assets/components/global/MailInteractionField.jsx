@@ -10,19 +10,19 @@ const MailInteractionField = () => {
     const [mappedLetter, setMappedLetter] = useState('')
 
     const [actionMail] = useActionMailsMutation()
-    const {data = []} = useGetMailsQuery('')
+    const {data} = useGetMailsQuery('')
 
 
     const letterMappingHandler = async (idx) => {
-        if (data.find(letter => letter.id === (idx)).read === false) {
+        if (data.results.find(letter => letter.message_id === (idx)).status === false) {
             const prop = {
                 id: idx,
-                action: {read: true}
+                action: {status: true}
             }
             await actionMail(prop).unwrap()
         }
         setMailCardActive(true)
-        setMappedLetter(data.find(letter => letter.id === (idx)))
+        setMappedLetter(data.results.find(letter => letter.message_id === (idx)))
     }
 
     // const resendHandler = () => {

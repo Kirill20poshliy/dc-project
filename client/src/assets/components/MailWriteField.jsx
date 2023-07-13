@@ -10,11 +10,8 @@ import { useSelector } from "react-redux";
 const MailWriteField = () => {
 
     const [writeMail] = useWriteMailMutation()
-    const user = useSelector(state => state.user)
-    const newUser = Object.keys(user)
-                        .filter(key => key !== 'memory')
-                        .reduce( (res, key) => { res[key] = user[key]; return res; }, {})
-
+    const user = useSelector(state => state.user.id)
+    
     const [mailSendTo, setMailSendTo] = useState('')
     const [mailTitle, setMailTitle] = useState('')
     const [mailBody, setMailBody] = useState('')
@@ -25,24 +22,26 @@ const MailWriteField = () => {
 
     const sendMailHandler = async () => {
 
-        const time = Date()
-
         const body = {
-            mailer: newUser,
-            sentTo: [mailSendTo],
-            title: mailTitle,
+            sender: user,
+            recipient: mailSendTo,
+            subject: mailTitle,
             body: mailBody,
-            read: true,
-            time: time,
+            status: true,
             important: mailImportant,
             deleted: false,
-            attachments: mailAttachments,
+            attach: mailAttachments,
         }
         await writeMail(body)
         setMailSendTo('')
         setMailTitle('')
         setMailBody('')
         setMailImportant(false)
+    }
+
+    const attachmentsHandler = () => {
+        setAttachmentsWindow(attachmentsWindow ? false : false)
+        setMailAttachments([])
     }
 
     return(
@@ -84,7 +83,7 @@ const MailWriteField = () => {
                     </button>
                     <button 
                         className="btn btn-option content-center row"
-                        onClick={() => setAttachmentsWindow(!attachmentsWindow ? true : false)}
+                        onClick={() => attachmentsHandler()}
                     >
                         <img src={attachmentsIcon} alt="attachments"/>
                         {mailAttachments.length ? ` +${mailAttachments.length}` : ''}

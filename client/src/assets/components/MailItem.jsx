@@ -1,17 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import importantIcon from "../icons/important-icon.svg"
 import importantCheckedIcon from "../icons/important-checked-icon.svg"
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import {useDispatch} from "react-redux";
 import {checkHandler} from "../../store/mailsSlice";
-import {useActionMailsMutation} from '../../store/api'
+import {useActionMailsMutation, useGetProfilesQuery} from '../../store/api'
 
 const MailItem = (props) => {
 
     const [isChecked, setCheck] = useState(false)
     const [isRead, setRead] = useState(props.status)
     const [isImportant, setImportant] = useState(props.important)
+    const [senderProfile, setSenderProfile] = useState()
+    const [senderProfileName, setSenderProfileName] =useState('')
     const [actionMail] = useActionMailsMutation()
+    const {data, isSuccess} = useGetProfilesQuery(props.sender)
 
     const dispatch = useDispatch()
 
@@ -34,8 +37,51 @@ const MailItem = (props) => {
         setImportant(val)
     }
 
-    const {subject, date_received, message_id, attach, sender} = props
-    // const {avatar, name} = props.mailer
+    const {subject, date_received, message_id, attach} = props
+
+    let date = new Date(date_received)
+
+    let time = date.getHours() 
+                + ':' 
+                + (date.getMinutes().toString().length === 1 
+                    ? ('0' + date.getMinutes().toString()) 
+                    : (date.getMinutes()))
+
+    date = date.getDate() 
+            + '/' 
+            + date.getMonth() 
+            + '/' 
+            + date.getFullYear().toString().slice(2)
+
+    let dateNow = new Date()
+    dateNow = dateNow.getDate() 
+                + '/' 
+                + dateNow.getMonth() 
+                + '/' 
+                + dateNow.getFullYear().toString().slice(2)
+
+    if (date === dateNow) {
+        date = time
+    } else {
+        date = time + ' ' + date
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            setSenderProfile(data.results[0])
+        }
+    }, [isSuccess, data])
+
+    useEffect(() => {
+        if (senderProfile) {
+            setSenderProfileName(senderProfile.last_name 
+                                    + ' ' 
+                                    + senderProfile.first_name[0] 
+                                    + '.' 
+                                    + senderProfile.middle_name[0] 
+                                    + '.')
+        }
+    }, [senderProfile])
 
     return (
 
@@ -49,12 +95,10 @@ const MailItem = (props) => {
             <div className="radiomark">
                 <div className="row btn-layout">
                     <div className="user-avatar row content-center">
-                        {/* {avatar ? <img src={avatar} alt=""/> : name[0]} */}
-                        {message_id}
+                        {senderProfileName[0]}
                     </div>
                     <div className={isRead ? 'op-5' : 'op-1 color-primary'}>
-                       {sender}
-                        {/* {name} */}
+                        {senderProfileName}
                     </div>
                 </div>
                 <div className="title">{subject}</div>
@@ -78,7 +122,7 @@ const MailItem = (props) => {
                             ''
                         }                       
                     </div>
-                    <div className="op-5">{date_received}</div>
+                    <div className="op-5">{date}</div>
                 </div>
             </div>
         </label>

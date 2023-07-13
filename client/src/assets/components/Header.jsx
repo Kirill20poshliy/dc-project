@@ -1,12 +1,32 @@
-import React, {useState} from "react";
-// import userIcon from "../img/avatar.jpg"
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetProfilesQuery } from "../../store/api";
+import { setUserProfile } from "../../store/userSlice";
 
 const Header = () => {
 
-    const userAvatar = ''
     const [search, setSerach] = useState('')
-    const userName = useSelector(state => state.user.username)
+    const [userId, setUserId] = useState('')
+    const [user, setUser] = useState('') 
+    const stateUserId = useSelector(state => state.user.id)
+    const dispatch = useDispatch()
+
+    const {data, isSuccess} = useGetProfilesQuery(userId)
+
+    useEffect(() => {
+        if (stateUserId) {
+            setUserId(stateUserId)
+        }
+    }, [stateUserId])
+
+    useEffect(() => {
+        if (isSuccess) {
+            if (data.results.length === 1) {
+                dispatch(setUserProfile(data.results[0]))
+                setUser(data.results[0].last_name + ' ' + data.results[0].first_name)
+            }
+        }
+    }, [isSuccess, data, dispatch])
 
     return(
         <header className="header row space-between">
@@ -19,9 +39,9 @@ const Header = () => {
             />
             {/* <h1 style={{fontWeight: 900}}>МГТУ им. Н.Э. Баумана</h1> */}
             <div className="row btn-layout">
-                {userName ? userName : 'User'}
+                {user ? user : 'User'}
                 <div className="user-avatar row content-center">
-                    {userAvatar ? <img src={userAvatar} alt="Аватар"/> : userName[0]}
+                    {user[0]}
                 </div>
             </div>
         </header>

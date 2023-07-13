@@ -14,6 +14,7 @@ const LoginPage = () => {
 
     const [login, {isLoading, isError}] = useLoginMutation()
     const dispatch = useDispatch()
+    
 
     useEffect(() => {
         setErrMsg('')
@@ -46,8 +47,8 @@ const LoginPage = () => {
                 </div>
                 <form id='login-form' className="column content-center" onSubmit={submitHandler}>
                     <input 
-                        // type="email" 
-                        // name="email"
+                        type="text" 
+                        name="login"
                         autoComplete="on"
                         placeholder="Логин"
                         onChange={(e) => setUsername(e.target.value)}    

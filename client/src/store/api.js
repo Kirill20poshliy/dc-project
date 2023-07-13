@@ -7,7 +7,7 @@ const baseQuery = fetchBaseQuery({
         prepareHeaders: (headers, { getState }) => {
             const token = getState().user.token
             if (token) {
-                headers.set('Content-Type', 'X-CSRFToken', "Authorization", `Bearer ${token}`, 'Access-Control-Allow-Origin')
+                headers.set('Content-Type', 'application/json')
             }
             return headers
         }
@@ -36,11 +36,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const api = createApi({
     reducerPath: 'api',
-    tagTypes: ['Mails', 'User'],
+    tagTypes: ['Mails', 'User', 'Profiles'],
     baseQuery: baseQueryWithReauth,
     endpoints: (build) => ({
         getMails: build.query({
-            query: (filter = '') => `/messages${filter}/`,
+            query: (filter = '') => `/messages/${filter}`,
             providesTags: (result) =>
             result
               ? [
@@ -51,7 +51,7 @@ export const api = createApi({
         }),
         actionMails: build.mutation({
             query: ({id, action}) => ({
-                url: `/mails/${id}`,
+                url: `/messages/${id}/`,
                 method: 'PATCH',
                 body: action,
             }),
@@ -59,7 +59,7 @@ export const api = createApi({
         }),
         deleteHardMail: build.mutation({
             query: (id) => ({
-                url: `/messages/${id}`,
+                url: `/messages/${id}/`,
                 method: 'DELETE',
             }),
             invalidatesTags: [{ type: 'Mails', id: 'LIST' }]
@@ -80,14 +80,27 @@ export const api = createApi({
             }),
             invalidatesTags: [{ type: 'User' }]
         }),
-        getProfiles: build.query({
-            query: (id) => ({
-                url: `/profiles/${id}`,
+        getUser: build.query({
+            query: (username) => ({
+                url: `/user/?username=${username}`,
                 method: 'GET',
                 providesTags: (result) =>
                 result
                   ? [
-                      ...result.map(({ id }) => ({ type: 'Profiles', id})),
+                      ...result.map(({ id }) => ({ type: 'User', id})),
+                      { type: 'User', id: 'id'},
+                    ]
+                  : [{ type: 'User', id: 'id'}],
+            })
+        }),
+        getProfiles: build.query({
+            query: (id) => ({
+                url: `/profiles/?user=${id}`,
+                method: 'GET',
+                providesTags: (result) =>
+                result
+                  ? [
+                      ...result.result.map(({ id }) => ({ type: 'Profiles', id})),
                       { type: 'Profiles', id: 'id'},
                     ]
                   : [{ type: 'Profiles', id: 'id'}],
@@ -96,4 +109,12 @@ export const api = createApi({
     })
 })
 
-export const {useGetMailsQuery, useActionMailsMutation, useWriteMailMutation, useDeleteHardMailMutation, useLoginMutation, useGetProfilesQuery} = api
+export const {useGetMailsQuery, 
+                useActionMailsMutation, 
+                useWriteMailMutation, 
+                useDeleteHardMailMutation, 
+                useLoginMutation, 
+                useGetProfilesQuery,
+                useLazyGetProfilesQuery, 
+                useGetUserQuery
+            } = api

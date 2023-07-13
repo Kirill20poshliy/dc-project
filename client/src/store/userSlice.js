@@ -3,10 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        name: null,
+        id: '',
+        first_name: '',
+        last_name: '',
+        middle_name: '',
         username: null,
         token: null,
-        memory: null,
+        memory: 200,
     },
     reducers: {
         setCredentials(state, action) {
@@ -14,25 +17,33 @@ const userSlice = createSlice({
             state.username = username
             state.token = access
         },
-        setUserCredentials(state, action) {
-            const {name, memory} = action.payload.user
-            state.name = name
-            state.memory = memory
+
+        setUserId(state, action) {
+            state.id = action.payload
+        },
+
+        setUserProfile(state, action) {
+            const userData = action.payload
+            state.first_name = userData.first_name
+            state.last_name = userData.last_name
+            state.middle_name = userData.middle_name
         },
         logOut(state) {
             state.username = null
             state.token = null
-            state.name = null
-            state.memory = null
+            state.id = ''
+            state.first_name = ''
+            state.last_name = ''
+            state.middle_name = ''
+            state.memory = 200
         }
     }
 })
 
-export const {setCredentials, logOut} = userSlice.actions
+export const {setCredentials, setUserId, setUserProfile, logOut} = userSlice.actions
 
 export default userSlice.reducer
 
 export const selectCurrentUsername = (state) => state.user.username
 export const selectCurrentToken = (state) => state.user.token
 export const selectCurrentMemory = (state) => state.user.memory
-export const selectCurrentName = (state) => state.user.name

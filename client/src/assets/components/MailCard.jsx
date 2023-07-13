@@ -1,20 +1,27 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import resendIcon from '../icons/resend-icon-blue.svg'
 import trashIcon from '../icons/trash-icon-blue.svg'
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import downloadIcon from '../icons/download-icon.svg'
 import shareIcon from '../icons/share-icon-blue.svg'
 import { useDispatch, useSelector} from 'react-redux'
-import {useActionMailsMutation, useDeleteHardMailMutation} from '../../store/api'
+import {useActionMailsMutation, useDeleteHardMailMutation, useLazyGetProfilesQuery} from '../../store/api'
 import {resetHandler} from "../../store/mailsSlice";
 
 const MailCard = (props) => {
 
     const [menuActive, setMenu] = useState('')
+    const [sender, setSender] = useState('')
+    const [recipient, setRecipient] = useState('')
+
     const filter = useSelector(state => state.mails.filter)
     const dispatch = useDispatch()
+
     const [deleteHardMail] = useDeleteHardMailMutation()
     const [actionMail] = useActionMailsMutation()
+
+    const [getSender, senderProfile] = useLazyGetProfilesQuery()
+    const [getRecipient, recipientProfile] = useLazyGetProfilesQuery()
 
     const menuHandler = () => {
         if (menuActive === '') {
@@ -26,16 +33,60 @@ const MailCard = (props) => {
 
     const deleteHandler = async () => {
         if (filter === '?deleted=true') {
-            await deleteHardMail(props.letter.id).unwrap()
+            await deleteHardMail(props.letter.message_id).unwrap()
             dispatch(resetHandler())
         } else {
-            const prop = {id: props.letter.id, action: {deleted: true}}
+            const prop = {id: props.letter.message_id, action: {deleted: true}}
             await actionMail(prop).unwrap()
             dispatch(resetHandler())
         }
     }
 
     const {activeCard, letter} = props
+
+    let dateTime = new Date(letter.date_received)
+
+    dateTime = dateTime.getHours() 
+                + ':'
+                + (dateTime.getMinutes().toString().length === 1 
+                    ? ('0' + dateTime.getMinutes().toString()) 
+                    : (dateTime.getMinutes()))
+                + ' ' 
+                + dateTime.getDate()
+                + '/' 
+                + dateTime.getMonth() 
+                + '/' 
+                + dateTime.getFullYear().toString().slice(2)
+          
+    useEffect(() => {
+        if (props.letter) {
+            getSender(props.letter.sender)
+            getRecipient(props.letter.recipient)
+        }
+    }, [props.letter, getSender, getRecipient])
+    
+    useEffect(() => {
+        if (senderProfile.isSuccess && recipientProfile.isSuccess) {
+            setSender(
+                senderProfile.data.results[0].last_name
+                + ' '
+                + senderProfile.data.results[0].first_name
+                + ' '
+                + senderProfile.data.results[0].middle_name
+            )
+            setRecipient(
+                recipientProfile.data.results[0].last_name
+                + ' '
+                + recipientProfile.data.results[0].first_name
+                + ' '
+                + recipientProfile.data.results[0].middle_name
+            )
+        }
+    }, [senderProfile.isSuccess,
+        recipientProfile.isSuccess,
+        recipientProfile.data,
+        senderProfile.data
+    ])
         
     return (
 
@@ -46,14 +97,14 @@ const MailCard = (props) => {
                         <div className='card column card-active'>
                             <div className='heading column content-start'>
                                 <div className='row space-between'>
-                                    <p>От кого: {letter.mailer.name}</p>
-                                    <p>{letter.mailer.email}</p>
+                                    <p>От кого: {sender}</p>
+                                    {/* <p>{recipient}</p> */}
                                 </div>
-                                <p>Кому: {letter.sentTo.join(', ')}</p>
+                                <p>Кому: {recipient}</p>
                                 <hr/>
                                 <div className='row space-between'>
-                                    <div>{letter.title}</div>
-                                    <p>{letter.time}</p>
+                                    <div>{letter.subject}</div>
+                                    <p>{dateTime}</p>
                                 </div>
                             </div>
                             <p className='text-body-start'>{letter.body}</p>

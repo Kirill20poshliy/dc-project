@@ -29,9 +29,9 @@ from database.serializers import (
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filterset_field = [
+    filterset_fields = [
         "username",
-        "id"
+        "id",
     ]
 
 class UserProfileViewSet(ModelViewSet):
