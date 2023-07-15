@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -169,6 +169,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+
 }
 
 

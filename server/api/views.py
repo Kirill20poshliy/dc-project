@@ -42,6 +42,7 @@ class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     filterset_fields = [
+        "id",
         "user",
         "type",
     ] 

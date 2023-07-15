@@ -45,6 +45,7 @@ from django.utils import timezone
 
 
 class UserProfile(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
