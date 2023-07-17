@@ -5,10 +5,12 @@ import Modal from './Modal';
 import { useSelector, useDispatch } from "react-redux";
 import { useGetUserQuery } from '../../store/api';
 import { setUserId } from '../../store/userSlice';
+import Popup from './Popup';
 
 const BodyWrapper = () => {
 
   const modal = useSelector(state => state.mails.modal)
+  const popup = useSelector(state => state.mails.popup)
   const username = useSelector(state => state.user.username)
   const {data, isSuccess} = useGetUserQuery(username)
 
@@ -26,6 +28,7 @@ const BodyWrapper = () => {
         <MenuForPC/>
         <MainField/>
         {modal && <Modal/>}
+        {popup && <Popup/>}
     </div>
 
   )  

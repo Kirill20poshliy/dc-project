@@ -10,12 +10,13 @@ const MailOptionsMenu = () => {
     const activeMenu = useSelector(state => state.mails.isChecked)
     const checkedItems = useSelector(state => state.mails.checkedMails)
     const filter = useSelector(state => state.mails.filter)
+    const userId = useSelector(state => state.user.profileId)
     const dispatch = useDispatch()
     const [actionMail] = useActionMailsMutation()
     const [deleteHardMail] = useDeleteHardMailMutation()
 
     const deleteHandler = async () => {
-        if (filter === '?deleted=true') {
+        if (filter === `?deleted=true&recipient=${userId}` || filter === `?deleted=false&sender=${userId}`) {
             for (let i = 0; i < checkedItems.length; i++) {
                 await deleteHardMail(checkedItems[i]).unwrap()
             }

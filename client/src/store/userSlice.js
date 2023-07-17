@@ -4,6 +4,7 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
         id: '',
+        profileId: '',
         first_name: '',
         last_name: '',
         middle_name: '',
@@ -27,6 +28,7 @@ const userSlice = createSlice({
             state.first_name = userData.first_name
             state.last_name = userData.last_name
             state.middle_name = userData.middle_name
+            state.profileId = userData.id
         },
         logOut(state) {
             state.username = null

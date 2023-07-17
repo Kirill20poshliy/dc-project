@@ -7,6 +7,8 @@ const mailsSlice = createSlice({
         checkedMails: [],
         isChecked: false,
         modal: false,
+        popup: false,
+        popupMessage: '',
     },
     reducers: {
 
@@ -32,11 +34,15 @@ const mailsSlice = createSlice({
 
         setModal(state) {
             state.modal = state.modal ? false : true
-        }
-
+        },
+        
+        setPopup(state, action) {
+            state.popup = action.payload.popup
+            state.popupMessage = action.payload.message
+        },
     },
 })
 
-export const {filterHandler, checkHandler, resetHandler, setModal} = mailsSlice.actions
+export const {filterHandler, checkHandler, resetHandler, setModal, setPopup} = mailsSlice.actions
 
 export default mailsSlice.reducer

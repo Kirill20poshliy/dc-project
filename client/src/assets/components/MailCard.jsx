@@ -98,7 +98,7 @@ const MailCard = (props) => {
                             <div className='heading column content-start'>
                                 <div className='row space-between'>
                                     <p>От кого: {sender}</p>
-                                    {/* <p>{recipient}</p> */}
+                                    {/* <p>{sender}</p> */}
                                 </div>
                                 <p>Кому: {recipient}</p>
                                 <hr/>

@@ -66,7 +66,7 @@ export const api = createApi({
         }),
         writeMail: build.mutation({
             query: (body) => ({
-                url: '/messages',
+                url: '/messages/',
                 method: 'POST',
                 body,
             }),
@@ -116,5 +116,6 @@ export const {useGetMailsQuery,
                 useLoginMutation, 
                 useGetProfilesQuery,
                 useLazyGetProfilesQuery, 
-                useGetUserQuery
+                useGetUserQuery,
+                useLazyGetUserQuery
             } = api

@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 
 const MainMenu = () => {
 
-    const user = useSelector(state => state.user.id)
+    const user = useSelector(state => state.user.profileId)
     const [userId, setUserId] = useState('')
 
     const dispatch = useDispatch()
@@ -26,9 +26,9 @@ const MainMenu = () => {
         user && setUserId(user)
     }, [user])
 
-    // useEffect(() => {
-    //     dispatch(filterHandler(`?deleted=false&recipient=${userId}`))
-    // }, [dispatch, userId])
+    useEffect(() => {
+        dispatch(filterHandler(`?deleted=false&recipient=${userId}`))
+    }, [dispatch, userId])
 
     return (
         <div className="menu-main column">
@@ -48,7 +48,7 @@ const MainMenu = () => {
                     <div className="menu-folders column">
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`?deleted=false&mailer.email_ne=${user}`))}
+                            onClick={() => dispatch(filterHandler(`?deleted=false&recipient=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -69,7 +69,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`?deleted=false&mailer.email=${user}`))}
+                            onClick={() => dispatch(filterHandler(`?deleted=false&sender=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -79,7 +79,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler('?deleted=true'))}
+                            onClick={() => dispatch(filterHandler(`?deleted=true&recipient=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -99,14 +99,14 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('?read=false&deleted=false'))}
+                            onClick={() => dispatch(filterHandler('?status=false&deleted=false'))}
                             to='/main'
                         >
                             <img className='icon' src={indicator} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('?deleted=false&attachments_ne='))}
+                            onClick={() => dispatch(filterHandler('?deleted=false&attach='))}
                             to='/main'
                         >
                             <img className='icon' src={attachmentsIcon} alt=""/>

@@ -59,6 +59,8 @@ h2 {
   grid-template-columns: 22.25rem auto;
   width: 100%;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .icon {
@@ -76,5 +78,5 @@ h2 {
 @import url('./login-page.css');
 @import url('../write-field.css');
 @import url('./modal.css');
-
+@import url('../popup.css');
 
