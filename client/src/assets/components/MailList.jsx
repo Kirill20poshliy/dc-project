@@ -1,34 +1,50 @@
 import React, { useEffect } from "react";
 import MailItem from './MailItem'
-import {useSelector} from 'react-redux'
-import {useGetMailsQuery} from '../../store/api'
+import {useDispatch, useSelector} from 'react-redux'
+import {useLazyGetMailsQuery} from '../../store/api'
+import { setPaginationButtons } from "../../store/mailsSlice";
 
 const MailList = (props) => {
 
     const {mapping} = props
     const filter = useSelector(state => state.mails.filter)
-    const {data, isError, isLoading, refetch} = useGetMailsQuery(filter)
+    const page = useSelector(state => state.mails.page)
+    const [getMails, mails] = useLazyGetMailsQuery()
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        async function fetchMails() {
+            await getMails({filter, page})
+            .then(result => {
+                dispatch(setPaginationButtons({
+                    prev: result.data.previous,
+                    next: result.data.next
+                }))
+            })
+        }
+        fetchMails()
+    }, [filter, page, getMails, dispatch])
 
     useEffect(() => {
         let re = setInterval(() => {
-            refetch()
-        }, 5000)
+            getMails({filter, page})
+        }, 3000)
         return () => clearInterval(re)
-    }, [refetch])
+    }, [filter, page, getMails])
 
     return (
         <div className="column mail-list">
-            {isError && <p>Ошибка загрузки...</p>}
-            {!isLoading 
+            {mails.isError && <p>Ошибка загрузки...</p>}
+            {mails.isSuccess 
                 ?   <>
-                        {data.results.map(mail => (
+                        {mails.data.results.map(mail => (
                             <MailItem 
                                 key={mail.date_received} 
                                 {...mail}
                                 mapping={mapping}
                             />                    
                         ))}
-                        {!data.count && !isLoading ? <p>Список пуст</p> : ''}
+                        {!mails.data.count && !mails.isLoading ? <p>Список пуст</p> : ''}
                     </> 
                 : <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
         </div>

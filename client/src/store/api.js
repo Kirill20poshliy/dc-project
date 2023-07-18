@@ -40,7 +40,10 @@ export const api = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (build) => ({
         getMails: build.query({
-            query: (filter = '') => `/messages/?ordering=-date_received${filter}`,
+            query: ({filter = '', page = 1}) => ({
+                url: `/messages/?ordering=-date_received${filter}&page=${page}`,
+                method: 'GET',
+            }),
             providesTags: (result) =>
             result
               ? [
@@ -84,32 +87,33 @@ export const api = createApi({
             query: (username) => ({
                 url: `/user/?username=${username}`,
                 method: 'GET',
-                providesTags: (result) =>
-                result
-                  ? [
-                      ...result.map(({ id }) => ({ type: 'User', id})),
-                      { type: 'User', id: 'id'},
-                    ]
-                  : [{ type: 'User', id: 'id'}],
-            })
+            }),
+            // providesTags: (result) =>
+            // result
+            //   ? [
+            //       ...result.result.map(() => ({ type: 'User'})),
+            //       { type: 'User',},
+            //     ]
+            //   : [{ type: 'User',}],
         }),
         getProfiles: build.query({
             query: (id) => ({
                 url: `/profiles/?user=${id}`,
                 method: 'GET',
-                providesTags: (result) =>
-                result
-                  ? [
-                      ...result.result.map(({ id }) => ({ type: 'Profiles', id})),
-                      { type: 'Profiles', id: 'id'},
-                    ]
-                  : [{ type: 'Profiles', id: 'id'}],
             }),
+            // providesTags: (result) =>
+            // result
+            //   ? [
+            //       ...result.result.map(() => ({ type: 'Profiles'})),
+            //       { type: 'Profiles',},
+            //     ]
+            //   : [{ type: 'Profiles',}],
         }),
     })
 })
 
-export const {useGetMailsQuery, 
+export const {
+                useGetMailsQuery,
                 useActionMailsMutation, 
                 useWriteMailMutation, 
                 useDeleteHardMailMutation, 
@@ -117,5 +121,6 @@ export const {useGetMailsQuery,
                 useGetProfilesQuery,
                 useLazyGetProfilesQuery, 
                 useGetUserQuery,
-                useLazyGetUserQuery
+                useLazyGetUserQuery,
+                useLazyGetMailsQuery,
             } = api

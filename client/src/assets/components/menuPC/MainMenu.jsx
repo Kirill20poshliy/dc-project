@@ -10,9 +10,9 @@ import attachmentsIcon from '../../icons/attachments-icon.svg'
 import MemoryBar from "./MemoryBar";
 import {NavLink} from "react-router-dom";
 import {useDispatch} from 'react-redux'
-import {filterHandler} from '../../../store/mailsSlice'
-import {useGetMailsQuery} from '../../../store/api'
+import {filterHandler, setIncoming, setPage} from '../../../store/mailsSlice'
 import { useSelector } from "react-redux";
+import { useLazyGetMailsQuery } from "../../../store/api";
 
 const MainMenu = () => {
 
@@ -20,7 +20,12 @@ const MainMenu = () => {
     const [userId, setUserId] = useState('')
 
     const dispatch = useDispatch()
-    const {data = []} = useGetMailsQuery('')
+    const [getIncoming, incoming] = useLazyGetMailsQuery()
+
+    const switchHandler = (filter) => {
+        dispatch(setPage(1))
+        dispatch(filterHandler(filter))
+    }
 
     useEffect(() => {
         user && setUserId(user)
@@ -28,7 +33,11 @@ const MainMenu = () => {
 
     useEffect(() => {
         dispatch(filterHandler(`&deleted=false&recipient=${userId}`))
-    }, [dispatch, userId])
+        getIncoming({filter: `&deleted=false&recipient=${userId}&status=false`, page: 1})
+        .then(result => {
+            dispatch(setIncoming(result.data.count))
+        })
+    }, [dispatch, userId, getIncoming])
 
     return (
         <div className="menu-main column">
@@ -48,7 +57,7 @@ const MainMenu = () => {
                     <div className="menu-folders column">
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`&deleted=false&recipient=${userId}`))}
+                            onClick={() => switchHandler(`&deleted=false&recipient=${userId}`)}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -56,11 +65,11 @@ const MainMenu = () => {
                                 Входящие
                             </div>
                             {
-                                data.length ?
+                                incoming.isSuccess ?
                                 (
                                     <div className="row btn-layout">
                                         <img className='icon' src={indicator} alt="indicator"/>
-                                        {data.length}
+                                        {incoming.data.count}
                                     </div>
                                 )
                                 :
@@ -69,7 +78,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`&deleted=false&sender=${userId}`))}
+                            onClick={() => switchHandler(`&deleted=false&sender=${userId}`)}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -79,7 +88,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`&deleted=true&recipient=${userId}`))}
+                            onClick={() => switchHandler(`&deleted=true&recipient=${userId}`)}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -92,21 +101,21 @@ const MainMenu = () => {
                     <div className="row btn-layout space-between">
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('&important=true&deleted=false'))}
+                            onClick={() => switchHandler('&important=true&deleted=false')}
                             to='/main'
                         >
                             <img className='icon' src={importantCheckedIcon} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('&status=false&deleted=false'))}
+                            onClick={() => switchHandler('&status=false&deleted=false')}
                             to='/main'
                         >
                             <img className='icon' src={indicator} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('&deleted=false&attach='))}
+                            onClick={() => switchHandler('&deleted=false&attach=')}
                             to='/main'
                         >
                             <img className='icon' src={attachmentsIcon} alt=""/>

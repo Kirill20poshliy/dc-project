@@ -4,6 +4,10 @@ const mailsSlice = createSlice({
     name: 'mails',
     initialState: {
         filter: '',
+        page: 1,
+        prev: false,
+        next: false,
+        incoming: 0,
         checkedMails: [],
         isChecked: false,
         modal: false,
@@ -40,9 +44,31 @@ const mailsSlice = createSlice({
             state.popup = action.payload.popup
             state.popupMessage = action.payload.message
         },
+
+        setPage(state, action) {
+            state.page = action.payload
+        },
+
+        setPaginationButtons(state, action) {
+            state.prev = action.payload.prev
+            state.next = action.payload.next
+        },
+
+        setIncoming(state, action) {
+            state.incoming = action.payload
+        }
     },
 })
 
-export const {filterHandler, checkHandler, resetHandler, setModal, setPopup} = mailsSlice.actions
+export const {
+                filterHandler, 
+                checkHandler, 
+                resetHandler, 
+                setModal, 
+                setPopup, 
+                setPage, 
+                setPaginationButtons,
+                setIncoming,
+            } = mailsSlice.actions
 
 export default mailsSlice.reducer

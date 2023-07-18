@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import shareIcon from '../icons/share-icon.svg'
 import trashIcon from '../icons/trash-icon.svg'
 import {useDispatch, useSelector} from "react-redux";
-import {resetHandler, setModal} from "../../store/mailsSlice";
+import {resetHandler, setModal, setPopup} from "../../store/mailsSlice";
 import {useActionMailsMutation, useDeleteHardMailMutation} from '../../store/api'
+import Pagination from "./Pagination";
 
 const MailOptionsMenu = () => {
 
@@ -20,18 +21,25 @@ const MailOptionsMenu = () => {
             for (let i = 0; i < checkedItems.length; i++) {
                 await deleteHardMail(checkedItems[i]).unwrap()
             }
+            dispatch(setPopup({popup: true, message: 'Сообщение удалено безвозвратно!'}))
             dispatch(resetHandler())
         } else {
             for (let i = 0; i < checkedItems.length; i++) {
                 const prop = {id: checkedItems[i], action: {deleted: true}}
                 await actionMail(prop).unwrap()
             }
+            dispatch(setPopup({popup: true, message: 'Сообщение удалено!'}))
             dispatch(resetHandler())
         }
     }
 
+    useEffect(() => {
+
+    }, [])
+
     return (
         <div className="row mail-options">
+            <Pagination/>
             <button 
                 className="btn btn-layout btn-context" 
                 disabled={activeMenu && filter !== '?deleted=true' ? "" : "disabled"}

@@ -17,7 +17,7 @@ const MailWriteField = () => {
     const [mailTitle, setMailTitle] = useState('')
     const [mailBody, setMailBody] = useState('')
     const [mailImportant, setMailImportant] = useState(false)
-    const [mailAttachments, setMailAttachments] = useState(null)
+    const [mailAttachments, setMailAttachments] = useState([3])
 
     // const [attachmentsWindow, setAttachmentsWindow] = useState(false)
     const [getRecipientUser] = useLazyGetUserQuery()
@@ -41,10 +41,16 @@ const MailWriteField = () => {
                         recipient: data.data.results[0].id,
                         subject: mailTitle,
                         body: mailBody,
-                        status: false,
-                        important: mailImportant,
-                        deleted: false,
                         attach: mailAttachments,
+                        status: false,
+                        status_sender: true,
+                        status_recipient: false,
+                        important: mailImportant,
+                        important_sender: mailImportant,
+                        important_recipient: mailImportant,
+                        deleted: false,
+                        deleted_sender: false,
+                        deleted_recipient: false,
                     }
                     await writeMail(body)
                     setMailSendTo('')
@@ -115,7 +121,7 @@ const MailWriteField = () => {
                         />
                         <div className="filemark">
                             <img src={attachmentsIcon} alt="attachments"/>
-                            {mailAttachments.length ? ` +${mailAttachments.length}` : ''}
+                            {/* {mailAttachments.length ? ` +${mailAttachments.length}` : ''} */}
                         </div>
                     </label>
                     {/* <button 

@@ -67,6 +67,11 @@ h2 {
   height: 1rem;
 }
 
+.pagination {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 
 @import url('./layouts.css');
 @import url('./menu-pc.css');

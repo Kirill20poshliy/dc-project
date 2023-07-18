@@ -26,3 +26,7 @@
     text-align: start;
     line-height: 1.75rem;
   }
+
+  .g-5 {
+    gap: .75rem;
+  }
