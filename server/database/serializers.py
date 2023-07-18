@@ -67,6 +67,13 @@ class MessageSerializer(serializers.ModelSerializer):
             "body",
             "attach",
             "status",
+            "status_sender",
+            "status_recipient",
             "important",
+            "important_sender",
+            "important_recipient",
             "deleted",
+            "deleted_sender",
+            "deleted_recipient",
+        
         )

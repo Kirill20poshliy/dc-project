@@ -89,7 +89,11 @@ class Message(models.Model):
         ("не прочитано", "Не прочитано"),
     ]
     status = models.BooleanField(default=False)
+    status_sender = models.BooleanField(default=False)
+    status_recipient = models.BooleanField(default=False)
     important = models.BooleanField(default=False)
+    important_sender = models.BooleanField(default=False)
+    important_recipient = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
     deleted_sender = models.BooleanField(default=False)
     deleted_recipient = models.BooleanField(default=False)
