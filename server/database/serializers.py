@@ -5,15 +5,11 @@
 """
 
 
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
+from .models import Attachment, Message, UserProfile
 
-from .models import (
-    UserProfile,
-    Message,
-    Attachment,
-)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,12 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
         )
-        
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
     Сериализация модели UserProfile
     """
+
     class Meta:
         model = UserProfile
         user = UserSerializer
@@ -39,24 +36,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "user",
             "type",
         )
-        
-        
+
+
 class AttachmentSerializer(serializers.ModelSerializer):
-    """
-    """
+    """ """
+
     class Meta:
         model = Attachment
         fields = (
             "file",
             "file_name",
             "file_type",
-        )        
+        )
 
 
 class MessageSerializer(serializers.ModelSerializer):
     """
     Сериализация модели Message
     """
+
     class Meta:
         model = Message
         attach = AttachmentSerializer()

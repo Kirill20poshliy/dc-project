@@ -6,24 +6,17 @@ ViewSet представления моделей для API веб прилож
 """
 
 
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.filters import OrderingFilter 
-from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
-
-from database.models import (
-    UserProfile,
-    Message,
-    Attachment,
-)
-
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.viewsets import ModelViewSet
 
+from database.models import Attachment, Message, UserProfile
 from database.serializers import (
-    UserProfileSerializer,
-    MessageSerializer,
     AttachmentSerializer,
-    UserSerializer
+    MessageSerializer,
+    UserProfileSerializer,
+    UserSerializer,
 )
 
 
@@ -35,36 +28,41 @@ class UserViewSet(ModelViewSet):
         "id",
     ]
 
+
 class UserProfileViewSet(ModelViewSet):
     """
     Класс представления модели пользователей.
     Полный CRUD сущности Пользователь
     """
+
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     filterset_fields = [
         "id",
         "user",
         "type",
-    ] 
-    
+    ]
+
+
 class AttachmentViewSet(ModelViewSet):
     """
     Класс представления модели пользователей.
     Полный CRUD сущности Вложение
     """
+
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     # filter_backends = [
     #     "file_name"
     # ]
-    
-    
+
+
 class MessageViewSet(ModelViewSet):
     """
     Класс представления модели сообщений.
     Полный CRUD сущности Сообщение
     """
+
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filter_backends = [
@@ -81,6 +79,4 @@ class MessageViewSet(ModelViewSet):
     ordering_fields = [
         "date_received",
     ]
-    search_fields = [
-        "subject"
-    ]
+    search_fields = ["subject"]

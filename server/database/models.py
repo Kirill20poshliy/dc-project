@@ -39,8 +39,8 @@
 """
 
 
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils import timezone
 
 
@@ -53,14 +53,16 @@ class UserProfile(models.Model):
     # login = models.CharField(max_length=50)
     # password = models.CharField(max_length=50)
     TYPE_CHOICES = (
-        ('student', 'Студент'),
-        ('employee', 'Сотрудник'),
+        ("student", "Студент"),
+        ("employee", "Сотрудник"),
     )
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
 
 
-def get_attachment_upload_path(instance, filename): #https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to:~:text=The%20primary_key%20argument%20isn%E2%80%99t%20supported%20and%20will%20raise%20an%20error%20if%20used.
-    return 'attachments/{0}/{1}'.format(
+def get_attachment_upload_path(
+    instance, filename
+):  # https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to:~:text=The%20primary_key%20argument%20isn%E2%80%99t%20supported%20and%20will%20raise%20an%20error%20if%20used.
+    return "attachments/{0}/{1}".format(
         hash(filename),
         filename,
     )
@@ -68,16 +70,23 @@ def get_attachment_upload_path(instance, filename): #https://docs.djangoproject.
 
 class Message(models.Model):
     message_id = models.AutoField(primary_key=True)
-    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sent_messages')
-    recipient = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, related_name='received_messages')
+    sender = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE, related_name="sent_messages"
+    )
+    recipient = models.ForeignKey(
+        UserProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="received_messages",
+    )
     date_received = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=50)
     body = models.TextField()
     date_sent = models.DateTimeField(default=timezone.now)
     date_read = models.DateTimeField(null=True)
     MESSAGE_STATUSES = [
-        ('прочитано', 'Прочитано'),
-        ('не прочитано', 'Не прочитано'),
+        ("прочитано", "Прочитано"),
+        ("не прочитано", "Не прочитано"),
     ]
     status = models.BooleanField(default=False)
     important = models.BooleanField(default=False)
@@ -89,8 +98,8 @@ class Message(models.Model):
     #     null=True,
     #     blank=True,
     #                           )
-    attach = models.ManyToManyField('Attachment', verbose_name="attachment")
-    
+    attach = models.ManyToManyField("Attachment", verbose_name="attachment")
+
     def __str__(self):
         return self.subject
 
