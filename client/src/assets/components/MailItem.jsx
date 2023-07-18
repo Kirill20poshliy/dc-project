@@ -4,7 +4,7 @@ import importantCheckedIcon from "../icons/important-checked-icon.svg"
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import {useDispatch} from "react-redux";
 import {checkHandler} from "../../store/mailsSlice";
-import {useActionMailsMutation, useGetProfilesQuery} from '../../store/api'
+import {useActionMailsMutation, useLazyGetProfilesQuery} from '../../store/api'
 
 const MailItem = (props) => {
 
@@ -14,7 +14,7 @@ const MailItem = (props) => {
     const [senderProfile, setSenderProfile] = useState()
     const [senderProfileName, setSenderProfileName] =useState('')
     const [actionMail] = useActionMailsMutation()
-    const {data, isSuccess} = useGetProfilesQuery(props.sender)
+    const [getProfile] = useLazyGetProfilesQuery()
 
     const dispatch = useDispatch()
 
@@ -67,10 +67,14 @@ const MailItem = (props) => {
     }
 
     useEffect(() => {
-        if (isSuccess) {
-            setSenderProfile(data.results[0])
+        async function getAllSender() {
+            await getProfile(props.sender + 1)
+            .then((profile) => {
+                setSenderProfile(profile.data.results[0])
+            })
         }
-    }, [isSuccess, data])
+        getAllSender()
+    }, [getProfile, props.sender])
 
     useEffect(() => {
         if (senderProfile) {

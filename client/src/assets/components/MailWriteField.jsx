@@ -17,9 +17,9 @@ const MailWriteField = () => {
     const [mailTitle, setMailTitle] = useState('')
     const [mailBody, setMailBody] = useState('')
     const [mailImportant, setMailImportant] = useState(false)
-    const [mailAttachments, setMailAttachments] = useState([3])
+    const [mailAttachments, setMailAttachments] = useState(null)
 
-    const [attachmentsWindow, setAttachmentsWindow] = useState(false)
+    // const [attachmentsWindow, setAttachmentsWindow] = useState(false)
     const [getRecipientUser] = useLazyGetUserQuery()
     const [getRecipientProfile] = useLazyGetProfilesQuery()
     const navigate = useNavigate()
@@ -38,7 +38,7 @@ const MailWriteField = () => {
                 if (data.data.count) {
                     const body = {
                         sender: user,
-                        recipient: data.data.results[0].user,
+                        recipient: data.data.results[0].id,
                         subject: mailTitle,
                         body: mailBody,
                         status: false,
@@ -62,9 +62,11 @@ const MailWriteField = () => {
         }
     }
 
-    const attachmentsHandler = () => {
-        setAttachmentsWindow(attachmentsWindow ? false : false)
-        setMailAttachments([])
+    const attachmentsHandler = (e) => {
+        if (e.target.files) {
+            setMailAttachments(e.target.files[0]);
+            console.log(e.target.files[0])
+        }
     }
 
     return(
@@ -104,13 +106,25 @@ const MailWriteField = () => {
                     >
                         <img src={!mailImportant ? importantIcon : impotantCheckedIcon} alt="important"/>
                     </button>
-                    <button 
+                    <label className="file-field btn btn-option content-center row">
+                        <input 
+                            type="file" 
+                            name="file" 
+                            id="file"
+                            onChange={(e) => attachmentsHandler(e)}
+                        />
+                        <div className="filemark">
+                            <img src={attachmentsIcon} alt="attachments"/>
+                            {mailAttachments.length ? ` +${mailAttachments.length}` : ''}
+                        </div>
+                    </label>
+                    {/* <button 
                         className="btn btn-option content-center row"
                         onClick={() => attachmentsHandler()}
                     >
                         <img src={attachmentsIcon} alt="attachments"/>
                         {mailAttachments.length ? ` +${mailAttachments.length}` : ''}
-                    </button>
+                    </button> */}
                     <NavLink to='/main' className='btn btn-option content-center row'>
                         <img src={exitIcon} alt="Выйти"/>
                         Отмена

@@ -86,3 +86,25 @@ textarea {
     border: 3px solid #1667DE;
     transition: all .15s ease-out;
 }
+
+.file-field {
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+    
+.file-field input[type='file'] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.file-field .filemark {
+    position: relative;
+    transition: all .3s ease-out;
+}

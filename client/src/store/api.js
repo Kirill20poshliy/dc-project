@@ -40,7 +40,7 @@ export const api = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (build) => ({
         getMails: build.query({
-            query: (filter = '') => `/messages/${filter}`,
+            query: (filter = '') => `/messages/?ordering=-date_received${filter}`,
             providesTags: (result) =>
             result
               ? [

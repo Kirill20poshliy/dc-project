@@ -27,7 +27,7 @@ const MainMenu = () => {
     }, [user])
 
     useEffect(() => {
-        dispatch(filterHandler(`?deleted=false&recipient=${userId}`))
+        dispatch(filterHandler(`&deleted=false&recipient=${userId}`))
     }, [dispatch, userId])
 
     return (
@@ -48,7 +48,7 @@ const MainMenu = () => {
                     <div className="menu-folders column">
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`?deleted=false&recipient=${userId}`))}
+                            onClick={() => dispatch(filterHandler(`&deleted=false&recipient=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -69,7 +69,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`?deleted=false&sender=${userId}`))}
+                            onClick={() => dispatch(filterHandler(`&deleted=false&sender=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -79,7 +79,7 @@ const MainMenu = () => {
                         </NavLink>
                         <NavLink 
                             className="btn btn-switch-menu" 
-                            onClick={() => dispatch(filterHandler(`?deleted=true&recipient=${userId}`))}
+                            onClick={() => dispatch(filterHandler(`&deleted=true&recipient=${userId}`))}
                             to='/main'
                         >
                             <div className="row btn-layout">
@@ -92,21 +92,21 @@ const MainMenu = () => {
                     <div className="row btn-layout space-between">
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('?important=true&deleted=false'))}
+                            onClick={() => dispatch(filterHandler('&important=true&deleted=false'))}
                             to='/main'
                         >
                             <img className='icon' src={importantCheckedIcon} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('?status=false&deleted=false'))}
+                            onClick={() => dispatch(filterHandler('&status=false&deleted=false'))}
                             to='/main'
                         >
                             <img className='icon' src={indicator} alt=""/>
                         </NavLink>
                         <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => dispatch(filterHandler('?deleted=false&attach='))}
+                            onClick={() => dispatch(filterHandler('&deleted=false&attach='))}
                             to='/main'
                         >
                             <img className='icon' src={attachmentsIcon} alt=""/>

@@ -9,10 +9,6 @@ const MailList = (props) => {
     const filter = useSelector(state => state.mails.filter)
     const {data, isError, isLoading, refetch} = useGetMailsQuery(filter)
 
-    const byField = (field) => {
-        return (prev, next) => prev[field] < next[field] ? 1 : -1
-    }
-
     useEffect(() => {
         let re = setInterval(() => {
             refetch()
@@ -31,7 +27,7 @@ const MailList = (props) => {
                                 {...mail}
                                 mapping={mapping}
                             />                    
-                        )).sort(byField('date_received'))}
+                        ))}
                         {!data.count && !isLoading ? <p>Список пуст</p> : ''}
                     </> 
                 : <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}

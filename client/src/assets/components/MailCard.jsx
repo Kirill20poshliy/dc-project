@@ -60,8 +60,8 @@ const MailCard = (props) => {
           
     useEffect(() => {
         if (props.letter) {
-            getSender(props.letter.sender)
-            getRecipient(props.letter.recipient)
+            getSender(props.letter.sender + 1)
+            getRecipient(props.letter.recipient + 1)
         }
     }, [props.letter, getSender, getRecipient])
     

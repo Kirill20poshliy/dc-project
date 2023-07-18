@@ -8,6 +8,7 @@ ViewSet представления моделей для API веб прилож
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import OrderingFilter 
+from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from database.models import (
@@ -79,4 +80,7 @@ class MessageViewSet(ModelViewSet):
     ]
     ordering_fields = [
         "date_received",
+    ]
+    search_fields = [
+        "subject"
     ]
