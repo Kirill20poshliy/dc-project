@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import MailOptionsMenu from '../MailOprionsMenu'
 import MailList from '../MailList'
 import MailCard from '../MailCard'
-import {useActionMailsMutation, useGetMailsQuery} from '../../../store/api'
+import {useActionMailsMutation, useLazyGetMailQuery} from '../../../store/api'
 
 const MailInteractionField = () => {
 
@@ -10,19 +10,21 @@ const MailInteractionField = () => {
     const [mappedLetter, setMappedLetter] = useState('')
 
     const [actionMail] = useActionMailsMutation()
-    const {data} = useGetMailsQuery('')
+    const [getMail] = useLazyGetMailQuery()
 
 
     const letterMappingHandler = async (idx) => {
-        if (data.results.find(letter => letter.message_id === (idx)).status === false) {
-            const prop = {
-                id: idx,
-                action: {status: true}
+        await getMail(idx).then(res => {
+            if (res.data.status === false) {
+                const prop = {
+                    id: idx,
+                    action: {status: true}
+                }
+                actionMail(prop)
             }
-            await actionMail(prop).unwrap()
-        }
-        setMailCardActive(true)
-        setMappedLetter(data.results.find(letter => letter.message_id === (idx)))
+            setMailCardActive(true)
+            setMappedLetter(res.data)
+        })
     }
 
     // const resendHandler = () => {

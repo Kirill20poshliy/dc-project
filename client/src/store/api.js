@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import { setCredentials, logOut } from './userSlice'
+// import { setCredentials, logOut } from './userSlice'
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8000/api',
@@ -7,7 +7,9 @@ const baseQuery = fetchBaseQuery({
         prepareHeaders: (headers, { getState }) => {
             const token = getState().user.token
             if (token) {
-                headers.set('Content-Type', 'application/json')
+                // headers.set('Content-Type', 'application/json')
+                // headers.set('Content-Type', 'multipart/form-data')
+                // headers.set('authorization', 'Bearer ${token}')
             }
             return headers
         }
@@ -51,6 +53,12 @@ export const api = createApi({
                   { type: 'Mails', id: 'LIST' },
                 ]
               : [{ type: 'Mails', id: 'LIST' }],
+        }),
+        getMail: build.query({
+            query: (id) => ({
+                url: `/messages/${id}/`,
+                method: 'GET',
+            }),
         }),
         actionMails: build.mutation({
             query: ({id, action}) => ({
@@ -97,14 +105,23 @@ export const api = createApi({
         }),
         getAttachments: build.query({
             query: (request) => ({
-                url: `/attachment/${request}`,
-                method: 'GET'
+                url: `/attachment/${request}/`,
+                method: 'GET',
+                
+                prepareHeaders: (headers) => {
+                    headers.set("Content-Type", "multipart/form-data")
+                    return headers
+                },
             })
         }),
         sendAttachments: build.mutation({
             query: (body) => ({
                 url: '/attachment/',
                 method: 'POST',
+                prepareHeaders: (headers) => {
+                    headers.set("Content-Type", "multipart/form-data")
+                    return headers
+                },
                 body: body,
             })
         }),
@@ -124,4 +141,5 @@ export const {
                 useLazyGetMailsQuery,
                 useLazyGetAttachmentsQuery,
                 useSendAttachmentsMutation,
+                useLazyGetMailQuery,
             } = api

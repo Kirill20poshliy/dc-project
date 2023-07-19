@@ -6,7 +6,7 @@ import indicator from '../../icons/indicator.svg'
 import sentIcon from '../../icons/sent-icon.svg'
 import trashIcon from '../../icons/trash-icon.svg'
 import importantCheckedIcon from '../../icons/important-checked-icon.svg'
-import attachmentsIcon from '../../icons/attachments-icon.svg'
+// import attachmentsIcon from '../../icons/attachments-icon.svg'
 import MemoryBar from "./MemoryBar";
 import {NavLink} from "react-router-dom";
 import {useDispatch} from 'react-redux'
@@ -113,13 +113,13 @@ const MainMenu = () => {
                         >
                             <img className='icon' src={indicator} alt=""/>
                         </NavLink>
-                        <NavLink 
+                        {/* <NavLink 
                             className="btn content-center btn-option" 
-                            onClick={() => switchHandler('&deleted=false&attach=')}
+                            onClick={() => switchHandler('&deleted=false&attach-')}
                             to='/main'
                         >
                             <img className='icon' src={attachmentsIcon} alt=""/>
-                        </NavLink>
+                        </NavLink> */}
                     </div>
                     <p>Память</p>
                     <MemoryBar/>

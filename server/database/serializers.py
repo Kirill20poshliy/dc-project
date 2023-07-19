@@ -44,6 +44,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
         fields = (
+            "id",   
             "file",
             "file_name",
             "file_type",

@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import resendIcon from '../icons/resend-icon-blue.svg'
+// import resendIcon from '../icons/resend-icon-blue.svg'
 import trashIcon from '../icons/trash-icon-blue.svg'
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import downloadIcon from '../icons/download-icon.svg'
-import shareIcon from '../icons/share-icon-blue.svg'
+// import shareIcon from '../icons/share-icon-blue.svg'
 import { useDispatch, useSelector} from 'react-redux'
-import {useActionMailsMutation, useDeleteHardMailMutation, useLazyGetProfilesQuery} from '../../store/api'
-import {resetHandler} from "../../store/mailsSlice";
+import {useActionMailsMutation, useDeleteHardMailMutation, useLazyGetAttachmentsQuery, useLazyGetProfilesQuery} from '../../store/api'
+import {resetHandler, setPopup} from "../../store/mailsSlice";
+import fileDownload from 'js-file-download'
 
 const MailCard = (props) => {
 
@@ -15,6 +16,7 @@ const MailCard = (props) => {
     const [recipient, setRecipient] = useState('')
 
     const filter = useSelector(state => state.mails.filter)
+    const userId = useSelector(state => state.user.profileId)
     const dispatch = useDispatch()
 
     const [deleteHardMail] = useDeleteHardMailMutation()
@@ -22,6 +24,7 @@ const MailCard = (props) => {
 
     const [getSender, senderProfile] = useLazyGetProfilesQuery()
     const [getRecipient, recipientProfile] = useLazyGetProfilesQuery()
+    const [getAttach, attachmentRes] = useLazyGetAttachmentsQuery()
 
     const menuHandler = () => {
         if (menuActive === '') {
@@ -32,13 +35,21 @@ const MailCard = (props) => {
     }
 
     const deleteHandler = async () => {
-        if (filter === '?deleted=true') {
+        if (filter === `&deleted=true&recipient=${userId}` || filter === `&deleted=false&sender=${userId}`) {
             await deleteHardMail(props.letter.message_id).unwrap()
             dispatch(resetHandler())
+            dispatch(setPopup({
+                popup: true, 
+                message: 'Сообщениe удалено безвозвратно!'
+            }))
         } else {
             const prop = {id: props.letter.message_id, action: {deleted: true}}
             await actionMail(prop).unwrap()
             dispatch(resetHandler())
+            dispatch(setPopup({
+                popup: true, 
+                message: 'Сообщениe удалено!'
+            }))
         }
     }
 
@@ -57,13 +68,43 @@ const MailCard = (props) => {
                 + dateTime.getMonth() 
                 + '/' 
                 + dateTime.getFullYear().toString().slice(2)
+
+    const downloadHandler = () => {
+        const filename = attachmentRes.data.file_name
+        fileDownload(attachmentRes.data.file, filename)
+
+        // const filename = attachmentRes.data.file_name
+        // fetch(attachmentRes.data.file, {
+        //     responseType: 'blob',
+        //   })
+        //   .then(res => {
+        //     fileDownload(res.data, filename)
+        //   })
+
+        // let blob = new Blob([attachmentRes.data.file])
+        // const filename = attachmentRes.data.file_name
+        // fileDownload(blob, filename)
+        // // console.log(attachmentRes.data)
+        // let blob = new Blob([attachmentRes.data.file])
+        // // let blob = attachmentRes.data.file 
+        // const downloadUrl = window.URL.createObjectURL(blob)
+        // const link = document.createElement('a')
+        // link.href = downloadUrl
+        // link.download = attachmentRes.data.file_name + '.' + attachmentRes.data.file_type
+        // document.body.appendChild(link)
+        // link.click()
+        // link.remove()
+    }
           
     useEffect(() => {
         if (props.letter) {
             getSender(props.letter.sender + 1)
             getRecipient(props.letter.recipient + 1)
+            if (props.letter.attach.length) {
+                getAttach(props.letter.attach[0])
+            }
         }
-    }, [props.letter, getSender, getRecipient])
+    }, [props.letter, getSender, getRecipient, getAttach])
     
     useEffect(() => {
         if (senderProfile.isSuccess && recipientProfile.isSuccess) {
@@ -90,7 +131,9 @@ const MailCard = (props) => {
         
     return (
 
-        <div className='mail-card'>
+        <div 
+            className='mail-card'
+        >
             {
                 activeCard ?
                     <>
@@ -108,25 +151,22 @@ const MailCard = (props) => {
                                 </div>
                             </div>
                             <p className='text-body-start'>{letter.body}</p>
-                            {letter.attachments ? 
+                            {letter.attach && attachmentRes.isSuccess ? 
                                 <>
                                     {
-                                        letter.attachments.map(attachment => (
-                                        <button className='btn btn-attachment space-between row' key={letter.attachments.indexOf(attachment)}>
+                                        letter.attach.map(attachment => (
+                                        <button
+                                            onClick={downloadHandler}
+                                            className='btn btn-attachment space-between row' 
+                                            target='_blank'
+                                            key={letter.attach.indexOf(attachment)}
+                                        >
                                             <div className='row btn-layout'>
                                                 <img className='icon' src={attachmentsIcon} alt='Вложение'/>
-                                                {attachment.source}                                            
+                                                {attachmentRes.data.file_name}                                            
                                             </div>
                                             <img className='icon' src={downloadIcon} alt='Скачать'/>
                                         </button>))                                           
-                                    }
-                                    {
-                                        letter.attachments.length > 1 ?
-                                            <button className='btn btn-attachment last content-center row'>
-                                                Скачать все
-                                            </button>
-                                        :
-                                        ''
                                     }                                      
                                 </>
                                 : 
@@ -136,9 +176,9 @@ const MailCard = (props) => {
                         <div className={`card-menu row ${menuActive}`}>
                             <div className={`burger ${menuActive}`} onClick={menuHandler}></div>
                             <div className={`body row content-center ${menuActive ? '' : 'op-0'}`}>
-                                <button className='btn btn-option content-center btn-layout' title="Ответить">
+                                {/* <button className='btn btn-option content-center btn-layout' title="Ответить">
                                     <img className='icon' src={resendIcon} alt='Ответить'/>
-                                </button>
+                                </button> */}
                                 <button 
                                     className='btn btn-option content-center btn-layout' 
                                     title="Удалить"
@@ -146,9 +186,9 @@ const MailCard = (props) => {
                                 >
                                     <img className='icon' src={trashIcon} alt='Удалить'/>
                                 </button>
-                                <button className='btn btn-option content-center btn-layout' title="Переслать">
+                                {/* <button className='btn btn-option content-center btn-layout' title="Переслать">
                                     <img className='icon' src={shareIcon} alt='Переслать'/>
-                                </button>
+                                </button> */}
                             </div>
                         </div>                       
                     </> 

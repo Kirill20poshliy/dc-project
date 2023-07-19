@@ -33,8 +33,9 @@ const Header = () => {
             <input 
                 type="search"
                 id="search"
-                placeholder="Поиск"
+                placeholder="Soon!"
                 value={search}
+                disabled
                 onChange={(e) => setSerach(e.target.value)}
             />
             {/* <h1 style={{fontWeight: 900}}>МГТУ им. Н.Э. Баумана</h1> */}

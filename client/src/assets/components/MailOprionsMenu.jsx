@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import shareIcon from '../icons/share-icon.svg'
+// import shareIcon from '../icons/share-icon.svg'
 import trashIcon from '../icons/trash-icon.svg'
 import {useDispatch, useSelector} from "react-redux";
-import {resetHandler, setModal, setPopup} from "../../store/mailsSlice";
+import {resetHandler, setPopup} from "../../store/mailsSlice";
 import {useActionMailsMutation, useDeleteHardMailMutation} from '../../store/api'
 import Pagination from "./Pagination";
 
@@ -46,14 +46,14 @@ const MailOptionsMenu = () => {
     return (
         <div className="row mail-options">
             <Pagination/>
-            <button 
+            {/* <button 
                 className="btn btn-layout btn-context" 
                 disabled={activeMenu && filter !== '?deleted=true' ? "" : "disabled"}
                 onClick={() => dispatch(setModal())}
             >
                 <img className='icon' src={shareIcon} alt=""/>
                 Переслать
-            </button>
+            </button> */}
             <button 
                 className="btn btn-layout btn-context" 
                 disabled={activeMenu ? "" : "disabled"}

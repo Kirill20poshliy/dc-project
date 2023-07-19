@@ -31,7 +31,7 @@ const App = () => {
     }
     navigate('/main')
     getLocalData()
-  }, [])
+  }, [dispatch, login])
 
   return (
 

@@ -63,7 +63,7 @@
 .card-menu {
     position: fixed;
     bottom: 1rem;
-    right: -14.3rem;
+    right: -6.25rem;
     gap: 2.6rem;
     transition: .3s;
     animation: menu-fade-in .6s ease-out;
@@ -144,11 +144,11 @@
 
 @keyframes menu-fade-in {
     0% {
-        right: -16rem; 
+        right: -11rem; 
         opacity: 0;
     }
     100% {
-        right: -14.3rem; 
+        right: -6.25rem; 
         opacity: 1;
     }
 }

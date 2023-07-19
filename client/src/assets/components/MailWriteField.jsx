@@ -4,25 +4,24 @@ import exitIcon from "../icons/exit-icon.svg"
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import importantIcon from '../icons/important-icon.svg'
 import impotantCheckedIcon from '../icons/important-checked-icon.svg'
-import {useLazyGetAttachmentsQuery, useLazyGetProfilesQuery, useLazyGetUserQuery, useSendAttachmentsMutation, useWriteMailMutation} from '../../store/api'
+import {useLazyGetProfilesQuery, useLazyGetUserQuery, useSendAttachmentsMutation, useWriteMailMutation} from '../../store/api'
 import { useDispatch, useSelector } from "react-redux";
 import { setPopup } from "../../store/mailsSlice";
 
 const MailWriteField = () => {
 
-    const [writeMail, {isLoading}] = useWriteMailMutation()
-    const [sendAttachment, {isSuccess}] = useSendAttachmentsMutation()
+    const [writeMail] = useWriteMailMutation()
+    const [sendAttachment, {data, isLoading}] = useSendAttachmentsMutation()
     const user = useSelector(state => state.user.profileId)
     
     const [mailSendTo, setMailSendTo] = useState('')
     const [mailTitle, setMailTitle] = useState('')
     const [mailBody, setMailBody] = useState('')
     const [mailImportant, setMailImportant] = useState(false)
-    const [mailAttachments, setMailAttachments] = useState([3])
+    const [mailAttachments, setMailAttachments] = useState(0)
 
     const [getRecipientUser] = useLazyGetUserQuery()
     const [getRecipientProfile] = useLazyGetProfilesQuery()
-    const [getAttachments] = useLazyGetAttachmentsQuery()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -35,14 +34,14 @@ const MailWriteField = () => {
                 } else {
                     throw new Error(`Пользователь не найден!`)
                 }
-            }).then(async (data) => {
-                if (data.data.count) {
+            }).then(async (res) => {
+                if (res.data.count && !isLoading) {
                     const body = {
                         sender: user,
-                        recipient: data.data.results[0].id,
+                        recipient: res.data.results[0].id,
                         subject: mailTitle,
                         body: mailBody,
-                        attach: mailAttachments,
+                        attach: data ? [data.id] : undefined,
                         status: false,
                         status_sender: true,
                         status_recipient: false,
@@ -58,6 +57,7 @@ const MailWriteField = () => {
                     setMailTitle('')
                     setMailBody('')
                     setMailImportant(false)
+                    setMailAttachments(0)
                     navigate('/main')
                     dispatch(setPopup({popup: true, message: 'Сообщение отправлено!'}))  
                 } else {
@@ -71,8 +71,12 @@ const MailWriteField = () => {
 
     const attachmentsHandler = (e) => {
         if (e.target.files) {
-            setMailAttachments(e.target.files[0]);
-            console.log(e.target.files[0])
+            const fileData = new FormData();
+            fileData.append("file", e.target.files[0])
+            fileData.append("file_name", e.target.files[0].name)
+            fileData.append("file_type", e.target.files[0].type)
+            sendAttachment(fileData)
+            setMailAttachments(1)
         }
     }
 
@@ -122,27 +126,15 @@ const MailWriteField = () => {
                         />
                         <div className="filemark">
                             <img src={attachmentsIcon} alt="attachments"/>
-                            {/* {mailAttachments.length ? ` +${mailAttachments.length}` : ''} */}
+                            {mailAttachments ? ` +${mailAttachments}` : ''}
                         </div>
                     </label>
-                    {/* <button 
-                        className="btn btn-option content-center row"
-                        onClick={() => attachmentsHandler()}
-                    >
-                        <img src={attachmentsIcon} alt="attachments"/>
-                        {mailAttachments.length ? ` +${mailAttachments.length}` : ''}
-                    </button> */}
                     <NavLink to='/main' className='btn btn-option content-center row'>
                         <img src={exitIcon} alt="Выйти"/>
                         Отмена
                     </NavLink>
                 </div> 
             </div>
-            {isLoading && (
-                <div className="loader">
-                    <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                </div>
-            )}
         </div>
     )
 }
