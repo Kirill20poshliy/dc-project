@@ -110,7 +110,7 @@ class Message(models.Model):
 
 class Attachment(models.Model):
     # message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='attachments')
-    # pk = models.AutoField(unique=True)
+    id = models.AutoField(primary_key=True)
     file = models.FileField(upload_to=get_attachment_upload_path)
     file_name = models.CharField(max_length=50)
     file_type = models.CharField(max_length=20)
