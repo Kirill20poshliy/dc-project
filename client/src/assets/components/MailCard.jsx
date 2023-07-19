@@ -7,7 +7,6 @@ import downloadIcon from '../icons/download-icon.svg'
 import { useDispatch, useSelector} from 'react-redux'
 import {useActionMailsMutation, useDeleteHardMailMutation, useLazyGetAttachmentsQuery, useLazyGetProfilesQuery} from '../../store/api'
 import {resetHandler, setPopup} from "../../store/mailsSlice";
-import fileDownload from 'js-file-download'
 
 const MailCard = (props) => {
 
@@ -68,33 +67,6 @@ const MailCard = (props) => {
                 + dateTime.getMonth() 
                 + '/' 
                 + dateTime.getFullYear().toString().slice(2)
-
-    const downloadHandler = () => {
-        const filename = attachmentRes.data.file_name
-        fileDownload(attachmentRes.data.file, filename)
-
-        // const filename = attachmentRes.data.file_name
-        // fetch(attachmentRes.data.file, {
-        //     responseType: 'blob',
-        //   })
-        //   .then(res => {
-        //     fileDownload(res.data, filename)
-        //   })
-
-        // let blob = new Blob([attachmentRes.data.file])
-        // const filename = attachmentRes.data.file_name
-        // fileDownload(blob, filename)
-        // // console.log(attachmentRes.data)
-        // let blob = new Blob([attachmentRes.data.file])
-        // // let blob = attachmentRes.data.file 
-        // const downloadUrl = window.URL.createObjectURL(blob)
-        // const link = document.createElement('a')
-        // link.href = downloadUrl
-        // link.download = attachmentRes.data.file_name + '.' + attachmentRes.data.file_type
-        // document.body.appendChild(link)
-        // link.click()
-        // link.remove()
-    }
           
     useEffect(() => {
         if (props.letter) {
@@ -155,8 +127,10 @@ const MailCard = (props) => {
                                 <>
                                     {
                                         letter.attach.map(attachment => (
-                                        <button
-                                            onClick={downloadHandler}
+                                        <a
+                                            href={attachmentRes.data.file}
+                                            download={attachmentRes.data.file_name}
+                                            rel="noreferrer"
                                             className='btn btn-attachment space-between row' 
                                             target='_blank'
                                             key={letter.attach.indexOf(attachment)}
@@ -166,7 +140,7 @@ const MailCard = (props) => {
                                                 {attachmentRes.data.file_name}                                            
                                             </div>
                                             <img className='icon' src={downloadIcon} alt='Скачать'/>
-                                        </button>))                                           
+                                        </a>))                                           
                                     }                                      
                                 </>
                                 : 
