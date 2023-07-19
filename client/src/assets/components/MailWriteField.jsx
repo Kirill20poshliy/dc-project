@@ -4,13 +4,14 @@ import exitIcon from "../icons/exit-icon.svg"
 import attachmentsIcon from '../icons/attachments-icon.svg'
 import importantIcon from '../icons/important-icon.svg'
 import impotantCheckedIcon from '../icons/important-checked-icon.svg'
-import {useLazyGetProfilesQuery, useLazyGetUserQuery, useWriteMailMutation} from '../../store/api'
+import {useLazyGetAttachmentsQuery, useLazyGetProfilesQuery, useLazyGetUserQuery, useSendAttachmentsMutation, useWriteMailMutation} from '../../store/api'
 import { useDispatch, useSelector } from "react-redux";
 import { setPopup } from "../../store/mailsSlice";
 
 const MailWriteField = () => {
 
     const [writeMail, {isLoading}] = useWriteMailMutation()
+    const [sendAttachment, {isSuccess}] = useSendAttachmentsMutation()
     const user = useSelector(state => state.user.profileId)
     
     const [mailSendTo, setMailSendTo] = useState('')
@@ -19,9 +20,9 @@ const MailWriteField = () => {
     const [mailImportant, setMailImportant] = useState(false)
     const [mailAttachments, setMailAttachments] = useState([3])
 
-    // const [attachmentsWindow, setAttachmentsWindow] = useState(false)
     const [getRecipientUser] = useLazyGetUserQuery()
     const [getRecipientProfile] = useLazyGetProfilesQuery()
+    const [getAttachments] = useLazyGetAttachmentsQuery()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 

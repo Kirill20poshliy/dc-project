@@ -36,7 +36,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const api = createApi({
     reducerPath: 'api',
-    tagTypes: ['Mails', 'User', 'Profiles'],
+    tagTypes: ['Mails', 'User', 'Profiles', 'Attachments'],
     baseQuery: baseQueryWithReauth,
     endpoints: (build) => ({
         getMails: build.query({
@@ -88,26 +88,25 @@ export const api = createApi({
                 url: `/user/?username=${username}`,
                 method: 'GET',
             }),
-            // providesTags: (result) =>
-            // result
-            //   ? [
-            //       ...result.result.map(() => ({ type: 'User'})),
-            //       { type: 'User',},
-            //     ]
-            //   : [{ type: 'User',}],
         }),
         getProfiles: build.query({
             query: (id) => ({
                 url: `/profiles/?user=${id}`,
                 method: 'GET',
             }),
-            // providesTags: (result) =>
-            // result
-            //   ? [
-            //       ...result.result.map(() => ({ type: 'Profiles'})),
-            //       { type: 'Profiles',},
-            //     ]
-            //   : [{ type: 'Profiles',}],
+        }),
+        getAttachments: build.query({
+            query: (request) => ({
+                url: `/attachment/${request}`,
+                method: 'GET'
+            })
+        }),
+        sendAttachments: build.mutation({
+            query: (body) => ({
+                url: '/attachment/',
+                method: 'POST',
+                body: body,
+            })
         }),
     })
 })
@@ -123,4 +122,6 @@ export const {
                 useGetUserQuery,
                 useLazyGetUserQuery,
                 useLazyGetMailsQuery,
+                useLazyGetAttachmentsQuery,
+                useSendAttachmentsMutation,
             } = api

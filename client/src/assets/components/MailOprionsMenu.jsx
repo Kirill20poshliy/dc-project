@@ -17,19 +17,25 @@ const MailOptionsMenu = () => {
     const [deleteHardMail] = useDeleteHardMailMutation()
 
     const deleteHandler = async () => {
-        if (filter === `?deleted=true&recipient=${userId}` || filter === `?deleted=false&sender=${userId}`) {
+        if (filter === `&deleted=true&recipient=${userId}` || filter === `&deleted=false&sender=${userId}`) {
             for (let i = 0; i < checkedItems.length; i++) {
                 await deleteHardMail(checkedItems[i]).unwrap()
             }
-            dispatch(setPopup({popup: true, message: 'Сообщение удалено безвозвратно!'}))
             dispatch(resetHandler())
+            dispatch(setPopup({
+                popup: true, 
+                message: `${checkedItems.length === 1 ? 'Сообщениe удалено' : 'Сообщения удалены'} безвозвратно!`
+            }))
         } else {
             for (let i = 0; i < checkedItems.length; i++) {
                 const prop = {id: checkedItems[i], action: {deleted: true}}
                 await actionMail(prop).unwrap()
             }
-            dispatch(setPopup({popup: true, message: 'Сообщение удалено!'}))
             dispatch(resetHandler())
+            dispatch(setPopup({
+                popup: true, 
+                message: `${checkedItems.length === 1 ? 'Сообщениe удалено' : 'Сообщения удалены'}!`
+            }))
         }
     }
 
