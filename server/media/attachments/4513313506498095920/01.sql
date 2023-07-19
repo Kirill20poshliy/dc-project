@@ -1,1 +1,0 @@
-SELECT address from stores;
