@@ -18,6 +18,7 @@ const MainMenu = () => {
 
     const user = useSelector(state => state.user.profileId)
     const [userId, setUserId] = useState('')
+    const mails = useSelector(state => state.mails.mails)
 
     const dispatch = useDispatch()
     const [getIncoming, incoming] = useLazyGetMailsQuery()
@@ -32,12 +33,12 @@ const MainMenu = () => {
     }, [user])
 
     useEffect(() => {
-        dispatch(filterHandler(`&deleted=false&recipient=${userId}`))
+        // dispatch(filterHandler(`&deleted=false&recipient=${userId}`))
         getIncoming({filter: `&deleted=false&recipient=${userId}&status=false`, page: 1})
         .then(result => {
             dispatch(setIncoming(result.data.count))
         })
-    }, [dispatch, userId, getIncoming])
+    }, [dispatch, userId, getIncoming, mails])
 
     return (
         <div className="menu-main column">
@@ -65,7 +66,7 @@ const MainMenu = () => {
                                 Входящие
                             </div>
                             {
-                                incoming.isSuccess ?
+                                incoming.isSuccess && incoming.data.count ?
                                 (
                                     <div className="row btn-layout">
                                         <img className='icon' src={indicator} alt="indicator"/>

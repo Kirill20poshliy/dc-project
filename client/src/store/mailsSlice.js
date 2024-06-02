@@ -13,6 +13,7 @@ const mailsSlice = createSlice({
         modal: false,
         popup: false,
         popupMessage: '',
+        mails: [],
     },
     reducers: {
 
@@ -56,6 +57,10 @@ const mailsSlice = createSlice({
 
         setIncoming(state, action) {
             state.incoming = action.payload
+        },
+
+        setMails(state, action) {
+            state.mails = action.payload
         }
     },
 })
@@ -69,6 +74,7 @@ export const {
                 setPage, 
                 setPaginationButtons,
                 setIncoming,
+                setMails,
             } = mailsSlice.actions
 
 export default mailsSlice.reducer

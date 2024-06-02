@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import MailItem from './MailItem'
 import {useDispatch, useSelector} from 'react-redux'
 import {useLazyGetMailsQuery} from '../../store/api'
-import { setPaginationButtons } from "../../store/mailsSlice";
+import { setMails, setPaginationButtons } from "../../store/mailsSlice";
 
 const MailList = (props) => {
 
@@ -28,9 +28,12 @@ const MailList = (props) => {
     useEffect(() => {
         let re = setInterval(() => {
             getMails({filter, page})
+            .then(res => {
+                dispatch(setMails(res.data.results))
+            })
         }, 3000)
         return () => clearInterval(re)
-    }, [filter, page, getMails])
+    }, [filter, page, getMails, dispatch])
 
     return (
         <div className="column mail-list">
